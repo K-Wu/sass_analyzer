@@ -1,5 +1,6 @@
 from .common import *
 from ... import CASIO
+from .path_config import get_optrace_file_lb
 
 @dataclass
 class FrameworkOp:
@@ -67,9 +68,6 @@ def normalize_fw_opname(opname):
 
     return opname
 
-# TODO: change directory to card, model, config
-def get_optrace_file_lb(plat, app):
-    return f'{CASIO}/casio-results/postproc/{plat}/{app}/op-trace-large-batch.csv'
 
 def read_optrace(optrace_file):
     trace = []

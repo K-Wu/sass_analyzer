@@ -1,9 +1,7 @@
 from .common import *
 from ... import CASIO
+from .path_config import get_ncu_raw_file
 
-# TODO: change to card model, network, config
-def get_ncu_raw_file(plat : str, app : str, batch : int, samp : str = '10th'):
-    return f'{CASIO}/casio-results/{plat}/{app}/ncu-{samp}-{app}-train-b{batch}-raw.txt'
 
 def read_ncu_raw_file(filename):
     with open(filename) as f:

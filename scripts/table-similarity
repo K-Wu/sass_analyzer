@@ -5,6 +5,7 @@ import os
 from scipy.spatial.distance import pdist
 from scipy.spatial.distance import squareform
 from .. import CASIO
+from .utils.path_config import cache_file
 
 import numpy as np
 import utils
@@ -23,7 +24,6 @@ cols = {
 }
 
 apps = utils.apps #[:4]
-cache_file = f'{CASIO}/cache/opcodes.txt'
 
 if os.path.exists(cache_file):
     print(f'Loading opcode map from {cache_file}...')

@@ -4,6 +4,7 @@ import os
 import sys
 import utils
 from .. import CASIO
+from .utils.path_config import gpukernsum_file
 
 all_kerns = set()
 
@@ -13,8 +14,7 @@ for app in utils.apps:
 
     for plat in utils.plats:
         #batch = utils.get_large_batch_size(plat, app)
-        gpukernsum_file = f'{CASIO}/casio-results/summaries/{plat}/{app}/batch-{batch}_gpukernsum.csv'
-
+        
         if not os.path.exists(gpukernsum_file): continue
 
         cuda_kerns = set()

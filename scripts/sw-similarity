@@ -5,6 +5,8 @@ import os
 from scipy.spatial.distance import pdist
 from scipy.spatial.distance import squareform
 from .. import CASIO
+from .utils.path_config import cache_file
+
 
 import numpy as np
 import utils
@@ -23,8 +25,6 @@ def get_sass_heatmap(sass_file, opcode_map):
     packed_dists = pdist(all_data, 'cosine')
     return all_data, squareform(packed_dists)
 
-# TODO: make it a procedure
-cache_file = f'{CASIO}/cache/opcodes.txt'
 
 if os.path.exists(cache_file):
     print(f'Loading opcode map from {cache_file}...')

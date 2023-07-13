@@ -2,6 +2,9 @@ from .common import *
 from .is_gemm import *
 from . import cache
 from ... import CASIO
+from .path_config import get_nsys_gputrace_file
+from .path_config import get_nsys_niter
+
 
 @dataclass
 class NsysKernel:
@@ -17,8 +20,6 @@ class NsysKernel:
 
 nsys_trace_regex = r'(\d*),(\d*),(\d*),(\d*),(\d*),(\d*),(\d*),(\d*),(\d*),(\d*),(\d*\.?\d*),(\d*\.?\d*),[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,\"?([^"]+)\"?'
 
-def get_nsys_gputrace_file(plat : str, app : str, batch : int):
-    return f'{CASIO}/casio-results/summaries/{plat}/{app}/batch-{batch}_gputrace.csv.gz'
 
 def parse_nsys_line(line):
     m = re.match(nsys_trace_regex, line.strip())
@@ -59,17 +60,6 @@ def parse_nsys_kernsum2(line):
     m = re.match(regex, line)
     assert m is not None, f'Failed to parse line: "{line}"'
     return float(m.group(2)), int(m.group(3)), m.group(9)
-
-# TODO: change to card model, network, config
-def get_nsys_niter(plat, app, batch):
-    nsys_file = None
-    for filename in glob.glob(f'{CASIO}/casio-results/{plat}/{app}/nsys*b{batch}-*.nsys-rep'):
-        nsys_file = filename
-        break
-
-    assert nsys_file is not None, f'Failed to find nsys file for {plat}/{app} batch {batch}'
-
-    return int(nsys_file.replace('.nsys-rep', '').split('-')[-1][1:])
 
 
 def nsys_get_kernels(app, plat):

@@ -1,5 +1,6 @@
 from .common import *
 from ... import CASIO
+from .path_config import get_ncu_sass_file
 
 @dataclass
 class SassInst:
@@ -38,12 +39,8 @@ def kernels_are_equal(k1, k2):
 
     return True
 
-# TODO: change to card model, network, config
-def get_ncu_sass_file(plat : str, app : str, batch : int, samp : str = '10th'):
-    return f'{CASIO}/casio-results/{plat}/{app}/ncu-{samp}-{app}-train-b{batch}-sass.txt'
-
 # TODO: improve this with the one by cloudcores
-sdef parse_ncu_sass(filename):
+def parse_ncu_sass(filename):
     with open(filename) as file:
         kernels = []
         kname = None

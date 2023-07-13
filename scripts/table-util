@@ -5,6 +5,7 @@ import os
 from scipy.spatial.distance import pdist
 from .. import CASIO
 from scipy.spatial.distance import squareform
+from .utils.path_config import gpukernsum_file
 
 import numpy as np
 import utils
@@ -107,8 +108,7 @@ for i, app in enumerate(apps):
     niter = utils.get_nsys_niter('p100', app, batch)
 
     tot_time = 0
-    gpukernsum_file = f'{CASIO}/casio-results/summaries/p100/{app}/batch-{batch}_gpukernsum.csv'
-
+    
     with open(gpukernsum_file) as f:
         next(f)
         for line in f:
