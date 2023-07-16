@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-import matplotlib.pyplot as plt
-import seaborn as sns
+#import matplotlib.pyplot as plt
+#import seaborn as sns
 import os
-from scipy.spatial.distance import pdist
-from .. import CASIO
-from scipy.spatial.distance import squareform
+#from scipy.spatial.distance import pdist
+#from scipy.spatial.distance import squareform
 from .utils.path_config import get_nsys_gpukernsum_file
 
 import numpy as np
@@ -61,13 +60,12 @@ cols.update({
     for app in apps
 })
 
-
+# TODO: specify config
 for plat in utils.plats:
     peak_compute = peak_compute_v100 if plat == 'v100' else peak_compute_a100
     for i, app in enumerate(apps):
-        #batch = utils.get_large_batch_size(plat, app)
-        thput = utils.throughput(plat, app, batch)
-        raw_file = utils.get_ncu_raw_file(plat, app, batch)
+        thput = utils.throughput(plat, app, config)
+        raw_file = utils.get_ncu_raw_file(plat, app, config)
 
         if not os.path.exists(raw_file): continue
 

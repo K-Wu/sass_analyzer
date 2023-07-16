@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os
-import sys
+#import sys
 import utils
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,9 +12,9 @@ apps = utils.apps
 fig = plt.figure(figsize=(6, len(apps) * 3))
 axs = fig.subplots(len(apps), 1)
 
+# TODO: specify config
 for i, app in enumerate(utils.apps):
-    #batch = utils.get_large_batch_size('a100', app)
-    raw_file = utils.get_ncu_raw_file('a100', app, batch)
+    raw_file = utils.get_ncu_raw_file('a100', app, config)
 
     prettyname = utils.app_pretty_names[app]
     print(f'Processing {prettyname}...')

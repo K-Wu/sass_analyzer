@@ -7,18 +7,15 @@ from scipy.spatial.distance import squareform
 import sys
 import numpy as np
 import utils
+from .gemm_compare import get_kernels
 
 
-app = sys.argv[1]
 
-def get_kernels(app, plat):
-    #batch = utils.get_large_batch_size(plat, app)
-    nsys_trace_file = utils.get_nsys_gputrace_file(plat, app, batch)
-    return utils.read_nsys_trace(nsys_trace_file)
-
+# TODO: specify config
 for plat in utils.plats:
+    app = sys.argv[1]
     #batch = utils.get_large_batch_size(plat, app)
-    raw_file = utils.get_ncu_raw_file(plat, app, batch)
+    raw_file = utils.get_ncu_raw_file(plat, app, config)
     gemm_bins = {}
     nongemm_bins = {}
     prettyname = utils.app_pretty_names[app]

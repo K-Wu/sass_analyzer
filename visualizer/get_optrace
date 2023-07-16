@@ -1,27 +1,24 @@
 #!/usr/bin/env python
-from .. import CASIO
+from .. import __CASIO_ROOT__
 import utils
 import tfprof
 import torchprof
 import sys
-import glob
 import os
 from .utils.path_config import yield_traces
 
 plat = sys.argv[1]
 app = sys.argv[2]
-batch = int(sys.argv[3])
+config = sys.argv[3]
 
 
 prof_file = None
-#for filename in glob.glob(f'{CASIO}/casio-results/{plat}/{app}/*b{batch}-*'):
-for filename in yield_traces():
+for filename in yield_traces(plat, app, config):
     if os.path.basename(filename).startswith('prof') and filename.endswith('.txt'):
         prof_file = filename
         break
 
-#for filename in glob.glob(f'{CASIO}/casio-results/{plat}/{app}/*b{batch}-*'):
-for filename in yield_traces():
+for filename in yield_traces(plat, app, config):
     if 'trace' in filename and filename.endswith('.json'):
         prof_file = filename
         break

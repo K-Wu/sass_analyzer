@@ -9,7 +9,7 @@ class MyCuInsFeeder(CuInsFeeder):
     def extract_all(self, fout, *, func_filter=None, ins_filter=None):
         """Extracting kernel matching the filter to fout.
         2-line modified function based on the original extract()
-        
+
         Sometimes whole kernel sass is needed to check the context of an instruction,
         this will help to identify some rules of instruction correlations.
 

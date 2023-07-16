@@ -12,9 +12,8 @@ import utils.cache
 apps = utils.apps #[:4]
 
 @utils.cache.cache_pickle
-def get_hw_data(app, plat, batch):
-    #batch = utils.get_large_batch_size(plat, app)
-    raw_file = utils.get_ncu_raw_file(plat, app, batch)
+def get_hw_data(app, plat, config):
+    raw_file = utils.get_ncu_raw_file(plat, app, config)
     _, data = utils.read_ncu_raw_file_numpy(raw_file, utils.stats_of_interest[1:])
     return data
 
@@ -34,13 +33,13 @@ axs = np.array([
 ])
 
 all_data = None
+# TODO: specify config
 for i, app in enumerate(apps):
-    #batch = utils.get_large_batch_size('a100', app)
     # r, c = int((i % 2) * 2), int(i / 2)
     r, c = 0, i
 
     print(f'Processing {app}...')
-    data = get_hw_data(app, 'a100', batch)
+    data = get_hw_data(app, 'a100', config)
     if all_data is None: all_data = data
     else: all_data = np.concatenate((all_data, data), axis=0)
 

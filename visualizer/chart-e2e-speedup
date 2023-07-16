@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import matplotlib.pyplot as plt
-import seaborn as sns
+#import seaborn as sns
 import os
-from scipy.spatial.distance import pdist
-from scipy.spatial.distance import squareform
+#from scipy.spatial.distance import pdist
+#from scipy.spatial.distance import squareform
 
 import numpy as np
 import scipy
@@ -73,12 +73,13 @@ a100 = []
 p100_amdahl = []
 v100_amdahl = []
 
+# TODO: specify config
 for i, app in enumerate(apps):
     prettyname = utils.app_pretty_names[app]
     labels.append(prettyname)
 
     throughputs = {
-        plat: utils.throughput(plat, app)#utils.get_large_batch_size(plat, app))
+        plat: utils.throughput(plat, app, config)
         for plat in utils.plats
     }
 

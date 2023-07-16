@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 import matplotlib.pyplot as plt
-import seaborn as sns
+#import seaborn as sns
 import os
 import sys
-from scipy.spatial.distance import pdist
-from scipy.spatial.distance import squareform
+#from scipy.spatial.distance import pdist
+#from scipy.spatial.distance import squareform
 from matplotlib.patches import Rectangle
 
 import numpy as np
-import scipy
+#import scipy
 import utils
 import utils.cache
 import bins
@@ -41,10 +41,10 @@ def avg_runlen(kstats):
 
     return np.mean(run_lengths)
 
+# TODO: generalize to all platforms
 @utils.cache.cache_pickle
-def get_runlens(plat, app):
-    #batch = utils.get_large_batch_size(plat, app)
-    raw_file = utils.get_ncu_raw_file(plat, app, batch)
+def get_runlens(plat, app, config):
+    raw_file = utils.get_ncu_raw_file(plat, app, config)
 
     if not os.path.exists(raw_file):
         print(f' {raw_file} does not exist')
@@ -97,7 +97,7 @@ for i, app in enumerate(utils.apps):
         raw_file = utils.get_ncu_raw_file(plat, app, config)
         prettyname = utils.app_pretty_names[app]
 
-        avg, runlens, runbins, gemmlens, isgemm = get_runlens(plat, app)
+        avg, runlens, runbins, gemmlens, isgemm = get_runlens(plat, app, config)
 
         labels.append(f'{prettyname} ({avg:.1f})')
 

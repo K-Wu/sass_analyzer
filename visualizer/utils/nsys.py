@@ -53,9 +53,8 @@ def parse_nsys_kernsum(line):
     return float(m.group(2)), int(m.group(3)), m.group(9)
 
 
-def nsys_get_kernels(app, plat):
-    batch = get_large_batch_size(plat, app)
-    nsys_trace_file = get_nsys_gputrace_file(plat, app, batch)
+def nsys_get_kernels(app, plat, config):
+    nsys_trace_file = get_nsys_gputrace_file(plat, app, config)
     return read_nsys_trace(nsys_trace_file)
 
 @cache.cache_list(float)
@@ -64,8 +63,8 @@ def nsys_get_gemm_times_internal(plat):
     for app in apps:
         prettyname = app_pretty_names[app]
         print(f'Processing {prettyname}...')
-
-        kernels = nsys_get_kernels(app, plat)
+        # TODO: specify config
+        kernels = nsys_get_kernels(app, plat, config)
         tot_time = sum(k.time_ns for k in kernels)
         gemm_time = sum(k.time_ns for k in kernels if k.is_gemm)
         times.append(gemm_time)

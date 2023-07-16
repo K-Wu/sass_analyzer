@@ -11,9 +11,9 @@ WINDOW_LEN = bins.NUM_BINS
 
 plat = sys.argv[1]
 
+# TODO: specify config
 for i, app in enumerate(utils.apps):
-    #batch = utils.get_large_batch_size(plat, app)
-    raw_file = utils.get_ncu_raw_file(plat, app, batch)
+    raw_file = utils.get_ncu_raw_file(plat, app, config)
     prettyname = utils.app_pretty_names[app]
 
     if not os.path.exists(raw_file):

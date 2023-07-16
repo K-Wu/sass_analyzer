@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import matplotlib.pyplot as plt
-import seaborn as sns
+#import seaborn as sns
 import os
-from scipy.spatial.distance import pdist
-from scipy.spatial.distance import squareform
+#from scipy.spatial.distance import pdist
+#from scipy.spatial.distance import squareform
 import sys
 import numpy as np
 import utils
@@ -25,9 +25,9 @@ def get_sass_data():
     opcode_counts = {}
     traces = {}
     max_inst = {}
+    # TODO: specify config
     for app in utils.apps: #[:4]:
-        #batch = utils.get_large_batch_size('a100', app)
-        sass_file = utils.get_ncu_sass_file('a100', app, batch)
+        sass_file = utils.get_ncu_sass_file('a100', app, config)
 
         print(f'Processing {app}...')
         kernels = utils.parse_ncu_sass(sass_file)

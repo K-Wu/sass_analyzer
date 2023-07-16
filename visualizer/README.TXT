@@ -9,8 +9,8 @@ get_bench_times.sh <output directory>
 	- provide as directory for output: /p/vertical/afs-huge3/results/summaries/ [a100/, v100/, p100/]
 	  (script creates bench mark subdirectories)
 	  (bash script uses get_bench_times.py python script
-	- env variable: CASIO_ROOT=/p/vertical/afs-huge3/casio
-	  (location of casio git repo, needed for $CASIO_ROOT/visualizer/get_bench_times.py]
+	- env variable: __CASIO_ROOT__=/p/vertical/afs-huge3/casio
+	  (location of casio git repo, needed for $__CASIO_ROOT__/visualizer/get_bench_times.py]
 	  
 
 get_gemm_count_all.sh <output directory>
@@ -24,8 +24,8 @@ get_gemm_count_all.sh <output directory>
 	  [a/v,p]100-small-batch-list
 	- writes results to all-hw/large-batch-times.csv, all-hw/small-batch-times.csv
 	  (bash script uses get_gemm.sh bash script
-	- env variable: CASIO_ROOT=/p/vertical/afs-huge3/casio
-	  (location of casio git repo, needed for $CASIO_ROOT/visualizer/get_gemm.sh]
+	- env variable: __CASIO_ROOT__=/p/vertical/afs-huge3/casio
+	  (location of casio git repo, needed for $__CASIO_ROOT__/visualizer/get_gemm.sh]
 
 get_nsys_reports.sh
    [uses process_nsys.sh for each application]
@@ -33,8 +33,8 @@ get_nsys_reports.sh
 	- provide as directory for output: /p/vertical/afs-huge3/results/summaries/ [a100/, v100/, p100/]
 	  (script creates bench mark subdirectories)
 	- creates batch-<batch_size>_gputrace.csv.gz, _cudaapisum.csv, _gpukernsum.csv
-	- env variable: CASIO_ROOT=/p/vertical/afs-huge3/casio
-	  (location of casio git repo, needed for $CASIO_ROOT/visualizer/get_gemm.sh]
+	- env variable: __CASIO_ROOT__=/p/vertical/afs-huge3/casio
+	  (location of casio git repo, needed for $__CASIO_ROOT__/visualizer/get_gemm.sh]
 
 
 get_ncu_reports.sh
@@ -45,8 +45,8 @@ get_ncu_reports.sh
 	- creates batch-<batch_size>_feature-avg.csv
 	- creates batch-<batch_size>_flame.<hardware utilization>.csv
 	  ['cumm-fraction-time', 'metric', 'fraction-time', 'Kernel Name', 'launch__block_dim_x', 'launch__block_dim_y', 'launch__block_dim_z', 'launch__block_size', 'launch__grid_dim_x', 'launch__grid_dim_y', 'launch__grid_dim_z', 'launch__grid_size', 'launch__occupancy_limit_blocks', 'launch__occupancy_limit_registers', 'launch__occupancy_limit_shared_mem', 'launch__occupancy_limit_warps', 'launch__occupancy_per_block_size', 'launch__occupancy_per_register_count', 'launch__occupancy_per_shared_mem_size', 'launch__registers_per_thread', 'launch__registers_per_thread_allocated', 'launch__shared_mem_config_size', 'launch__shared_mem_per_block', 'launch__shared_mem_per_block_allocated', 'launch__shared_mem_per_block_driver', 'launch__shared_mem_per_block_dynamic', 'launch__shared_mem_per_block_static', 'launch__thread_count', 'launch__waves_per_multiprocessor']
-	- env variable: CASIO_ROOT=/p/vertical/afs-huge3/casio
-	  (location of casio git repo, needed for $CASIO_ROOT/visualizer/get_gemm.sh]
+	- env variable: __CASIO_ROOT__=/p/vertical/afs-huge3/casio
+	  (location of casio git repo, needed for $__CASIO_ROOT__/visualizer/get_gemm.sh]
     - Details of histo_from_ncu.py
 	  Originally written to get diff between two ncu reports.
 	  We now use to by providing the same file name for 1st and 2nd are; 3rd arg is output directory.
@@ -62,8 +62,8 @@ get_sass_reports.sh
 			_kernelname-dist.csv
 			_inst-total.csv
 			_inst-dist.csv  (PC, i-count-as-cummulative-fraction, fraction-of-time, cummulative-fraction-of-time, #-dynamic-instructions)
-	- env variable: CASIO_ROOT=/p/vertical/afs-huge3/casio
-	  (location of casio git repo, needed for $CASIO_ROOT/visualizer/get_gemm.sh]
+	- env variable: __CASIO_ROOT__=/p/vertical/afs-huge3/casio
+	  (location of casio git repo, needed for $__CASIO_ROOT__/visualizer/get_gemm.sh]
     - Details of process_sass.py to be written
 
 
@@ -73,8 +73,8 @@ get_kernel_hw_similarity_all.sh
 	- provide as directory for output: /p/vertical/afs-huge3/results/summaries/ [a100/, v100/, p100/]
 	  (script creates bench mark subdirectories)
 	- creates app/batch-<batch_size>_ncu_kernel_similarity.txt
-	- env variable: CASIO_ROOT=/p/vertical/afs-huge3/casio
-	  (location of casio git repo, needed for $CASIO_ROOT/visualizer/get_gemm.sh]
+	- env variable: __CASIO_ROOT__=/p/vertical/afs-huge3/casio
+	  (location of casio git repo, needed for $__CASIO_ROOT__/visualizer/get_gemm.sh]
     - heatmaps for each application can be created by uncommenting lines 54,55,56 in kernel_similarity.py
 	
 

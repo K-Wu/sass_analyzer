@@ -34,10 +34,9 @@ for app in utils.apps:
 
     else:
 
-
+    # TODO: specify config
     for plat in utils.plats:
-        #batch = utils.get_large_batch_size(plat, app)
-        nsys_trace_file = utils.get_nsys_gputrace_file(plat, app, batch)
+        nsys_trace_file = utils.get_nsys_gputrace_file(plat, app, config)
 
         kernels = utils.read_nsys_trace(nsys_trace_file)
         kern_unames = set(k.name for k in kernels)

@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
 import os
-import sys
 import utils
-from .. import CASIO
 from .utils.path_config import get_nsys_gpukernsum_file
 
 all_kerns = set()

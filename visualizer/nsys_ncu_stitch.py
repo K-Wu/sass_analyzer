@@ -1,30 +1,12 @@
-from dataclasses import dataclass
+#from dataclasses import dataclass
 import utils
 import gzip
 import numpy as np
 import re
 
-# Start (ns),
-# Duration (ns),
-# CorrId,
-# GrdX,
-# GrdY,
-# GrdZ,
-# BlkX,
-# BlkY,
-# BlkZ,
-# Reg/Trd,
-# StcSMem (MB),
-# DymSMem (MB),
-# Bytes (MB),
-# Throughput (MBps),
-# SrcMemKd,
-# DstMemKd,
-# Device,
-# Ctx,
-# Strm,
-# Name
-
+# Start (ns), Duration (ns), CorrId, GrdX, GrdY, GrdZ, BlkX, BlkY, BlkZ,
+# Reg/Trd, StcSMem (MB), DymSMem (MB), Bytes (MB), Throughput (MBps),
+# SrcMemKd, DstMemKd, Device, Ctx, Strm, Name
 nsys_trace_regex = r'(\d*),(\d*),(\d*),(\d*),(\d*),(\d*),(\d*),(\d*),(\d*),(\d*),(\d*\.?\d*),(\d*\.?\d*),[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,\"?([^"]+)\"?'
 
 

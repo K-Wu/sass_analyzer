@@ -1,11 +1,11 @@
-from ... import CASIO
-import re
-import os
-import gzip
-from dataclasses import dataclass
-import numpy as np
-import pandas as pd
-import glob
+#from ... import CASIO
+#import re
+#import os
+#import gzip
+#from dataclasses import dataclass
+#import numpy as np
+#import pandas as pd
+#import glob
 
 
 COL_WIDTH = (8.5 - 1.5 - 0.25) / 2
@@ -103,7 +103,7 @@ def shorten_string(s, lim=40):
 # def get_large_batch_size(plat, query_app):
 #     batch_sizes = {}
 
-#     with open(f'{CASIO}/casio-results/summaries/{plat}-large-batch-list') as f:
+#     with open(f'{__CASIO_ROOT__}/casio-results/summaries/{plat}-large-batch-list') as f:
 #         for line in f:
 #             [plat, app, batchstr] = line.strip().split('/')
 #             batch = int(batchstr.split('-')[-1])

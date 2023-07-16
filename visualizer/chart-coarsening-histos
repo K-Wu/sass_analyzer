@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import matplotlib.pyplot as plt
-import seaborn as sns
+#import seaborn as sns
 import os
-from scipy.spatial.distance import pdist
-from scipy.spatial.distance import squareform
+#from scipy.spatial.distance import pdist
+#from scipy.spatial.distance import squareform
 
 import numpy as np
 import utils
@@ -26,10 +26,10 @@ all_thread_counts = None
 all_sm_util = None
 all_dram_util = None
 
+# TODO: specify config
 for i, app in enumerate(apps):
     prettyname = utils.app_pretty_names[app]
-    #batch = utils.get_large_batch_size('a100', app)
-    raw_file = utils.get_ncu_raw_file('a100', app, batch)
+    raw_file = utils.get_ncu_raw_file('a100', app, config)
 
     print(f'Processing {app}...')
     _, data = utils.read_ncu_raw_file_numpy(raw_file, stats)

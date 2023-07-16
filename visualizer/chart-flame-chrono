@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import matplotlib.pyplot as plt
-import seaborn as sns
+#import seaborn as sns
 import os
-from scipy.spatial.distance import pdist
-from scipy.spatial.distance import squareform
+#from scipy.spatial.distance import pdist
+#from scipy.spatial.distance import squareform
 
 import numpy as np
 import utils
@@ -18,9 +18,9 @@ axs = fig.subplots(len(apps)//4, 5, sharex='col')
 # plt.xticks(fontsize=6)
 # plt.yticks(fontsize=6)
 
+# TODO: specify config
 for i, app in enumerate(apps):
-    #batch = utils.get_large_batch_size('a100', app)
-    raw_file = utils.get_ncu_raw_file('a100', app, batch)
+    raw_file = utils.get_ncu_raw_file('a100', app, config)
     r, c = i // 4, i % 4
 
     prettyname = utils.app_pretty_names[app]

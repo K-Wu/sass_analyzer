@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-import matplotlib.pyplot as plt
-import seaborn as sns
+#import matplotlib.pyplot as plt
+#import seaborn as sns
 import os
 from scipy.spatial.distance import pdist
 from scipy.spatial.distance import squareform
-from .. import CASIO
 from .utils.path_config import cache_file
 
 import numpy as np
@@ -34,11 +33,11 @@ if os.path.exists(cache_file):
 else:
     print(f'Generating opcode cache file {cache_file}')
     all_opcodes = set()
+    # TODO: specify config
     for i, app in enumerate(apps):
-        #batch = utils.get_large_batch_size('a100', app)
         prettyname = utils.app_pretty_names[app]
         print(f'Processing {app}...')
-        sass_file = utils.get_ncu_sass_file('a100', app, batch)
+        sass_file = utils.get_ncu_sass_file('a100', app, config)
         kernels = utils.parse_ncu_sass(sass_file)
         opcodes = utils.ncu_sass_opcodes(kernels)
         all_opcodes = all_opcodes.union(opcodes)
@@ -73,11 +72,11 @@ def num_clusters(data):
 all_hw_data = None
 all_sass_data = None
 
+# TODO: specify config
 for i, app in enumerate(apps):
     prettyname = utils.app_pretty_names[app]
-    #batch = utils.get_large_batch_size('a100', app)
-    sass_file = utils.get_ncu_sass_file('a100', app, batch)
-    raw_file = utils.get_ncu_raw_file('a100', app, batch)
+    sass_file = utils.get_ncu_sass_file('a100', app, config)
+    raw_file = utils.get_ncu_raw_file('a100', app, config)
     # r, c = int((i % 2) * 2), int(i / 2)
     r, c = 0, i
 

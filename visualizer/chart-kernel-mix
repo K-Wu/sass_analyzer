@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 import matplotlib.pyplot as plt
-import seaborn as sns
+#import seaborn as sns
 import os
-from scipy.spatial.distance import pdist
-from scipy.spatial.distance import squareform
-import sys
+#from scipy.spatial.distance import pdist
+#from scipy.spatial.distance import squareform
+#import sys
 import numpy as np
 import utils
 
@@ -18,10 +18,9 @@ kernel_frac = {}
 kernel_frac_byapp = {}
 keep = 49
 
-
+# TODO: specify config
 for app in utils.apps:
-    #batch = utils.get_large_batch_size('a100', app)
-    raw_file = utils.get_ncu_raw_file('a100', app, batch)
+    raw_file = utils.get_ncu_raw_file('a100', app, config)
     kernel_frac_byapp[app] = {}
 
     print(f'Processing {app}...')

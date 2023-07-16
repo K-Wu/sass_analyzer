@@ -35,6 +35,7 @@ gemm_only = False
 # if len(sys.argv) > 4:
 #     gemm_only = sys.argv[4] == 'gemm'
 
+# TODO: specify config
 for app in apps:
     if app not in utils.apps:
         for long_name in utils.apps:
@@ -42,8 +43,7 @@ for app in apps:
                 app = long_name
                 break
 
-    #batch = utils.get_large_batch_size(plat, app)
-    raw_file = utils.get_ncu_raw_file(plat, app, batch)
+    raw_file = utils.get_ncu_raw_file(plat, app, config)
     if not os.path.exists(raw_file):
         continue
     gemm_bins = {}

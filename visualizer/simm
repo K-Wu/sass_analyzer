@@ -12,19 +12,18 @@ import utils.cache
 apps = utils.apps #[:4]
 
 @utils.cache.cache_pickle
-def get_hw_data(app, plat, batch):
-    #batch = utils.get_large_batch_size(plat, app)
-    raw_file = utils.get_ncu_raw_file(plat, app, batch)
+def get_hw_data(app, plat, config):
+    raw_file = utils.get_ncu_raw_file(plat, app, config)
     _, data = utils.read_ncu_raw_file_numpy(raw_file, utils.stats_of_interest[1:])
     return data
 
 @utils.cache.cache_pickle
-def get_kern_names2(app, plat, batch):
-    #batch = utils.get_large_batch_size(plat, app)
-    kerns = utils.read_nsys_trace(utils.get_nsys_gputrace_file(plat, app, batch))
+def get_kern_names2(app, plat, config):
+    kerns = utils.read_nsys_trace(utils.get_nsys_gputrace_file(plat, app, config))
 
     return [k.name for k in kerns]
 
+# TODO: specify config
 for app in utils.apps:
     # TODO: change to our app if needed
     # app = 'meshgraphnets-cfd'
@@ -32,10 +31,9 @@ for app in utils.apps:
     fig = plt.figure(figsize=(20,20))
 
     all_data = None
-    #batch = utils.get_large_batch_size('a100', app)
 
     print(f'Processing {app}...')
-    data = get_hw_data(app, 'a100', batch)
+    data = get_hw_data(app, 'a100', config)
     if all_data is None: all_data = data
     else: all_data = np.concatenate((all_data, data), axis=0)
 
@@ -45,7 +43,7 @@ for app in utils.apps:
 
     prettyname = utils.app_pretty_names[app]
 
-    dyn_knames = get_kern_names2(app, 'a100', batch)
+    dyn_knames = get_kern_names2(app, 'a100', config)
 
     nkern_dyn = len(dyn_knames)
     ngemm_dyn = 0
