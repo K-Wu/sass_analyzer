@@ -140,5 +140,4 @@ print('Unique kernels in top 90%:', len(ukerns_90))
 
 plt.subplots_adjust(hspace=0.01)
 plt.tight_layout()
-os.makedirs('charts', exist_ok=True)
-plt.savefig(f'charts/kernel-mix2.pdf')
+plt.savefig(os.path.join(utils.get_charts_path(),'kernel-mix2.pdf'))

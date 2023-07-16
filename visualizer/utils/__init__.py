@@ -5,3 +5,4 @@ from .ncu_sass import *
 from .nsys import *
 from .fwops import *
 from .is_gemm import *
+from .path_config import *

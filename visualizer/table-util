@@ -5,7 +5,7 @@ import os
 from scipy.spatial.distance import pdist
 from .. import CASIO
 from scipy.spatial.distance import squareform
-from .utils.path_config import gpukernsum_file
+from .utils.path_config import get_nsys_gpukernsum_file
 
 import numpy as np
 import utils
@@ -19,7 +19,8 @@ def shorten_string(s, lim=50):
     return s
 
 apps = utils.apps
-apps.remove('tabnet')
+# TODO: change to our own apps if needed
+# apps.remove('tabnet')
 
 # https://developer.nvidia.com/blog/nvidia-ampere-architecture-in-depth/
 peak_compute_a100 = np.array([
@@ -61,7 +62,7 @@ cols.update({
 })
 
 
-for plat in ['a100', 'v100']:
+for plat in utils.plats:
     peak_compute = peak_compute_v100 if plat == 'v100' else peak_compute_a100
     for i, app in enumerate(apps):
         #batch = utils.get_large_batch_size(plat, app)
@@ -102,41 +103,41 @@ for plat in ['a100', 'v100']:
             f'{tensor_util:.2f}',
         ]
 
-for i, app in enumerate(apps):
-    #batch = utils.get_large_batch_size('p100', app)
-    prettyname = utils.app_pretty_names[app]
-    niter = utils.get_nsys_niter('p100', app, batch)
+for plat in utils.plats:
+    for i, app in enumerate(apps):
+        for config in utils.app_configs[app]:
+            prettyname = utils.app_pretty_names[app]
+            niter = utils.get_niter(config)
 
-    tot_time = 0
-    
-    with open(gpukernsum_file) as f:
-        next(f)
-        for line in f:
-            if not utils.is_blacklisted(line):
-                ktime, kinst, kname = utils.parse_nsys_kernsum2(line.strip())
-                if not utils.is_blacklisted(kname):
-                    tot_time += ktime / 1e9 / niter
+            tot_time = 0
+            
+            with open(get_nsys_gpukernsum_file('p100', app, config)) as f:
+                next(f)
+                for line in f:
+                    if not utils.is_blacklisted(line):
+                        ktime, kinst, kname = utils.parse_nsys_kernsum(line.strip())
+                        if not utils.is_blacklisted(kname):
+                            tot_time += ktime / 1e9 / niter
 
-    if app not in app_flops: continue
+            if app not in app_flops: continue
 
-    tot_app_flops = app_flops[app]
-    hw_aware_flops = tot_app_flops / tot_time
-    hw_aware_util = hw_aware_flops / 21.2e12 * 100
+            tot_app_flops = app_flops[app]
+            hw_aware_flops = tot_app_flops / tot_time
+            hw_aware_util = hw_aware_flops / 21.2e12 * 100
 
-    cols[app] += [
-        f'{hw_aware_util:.2f}'
-    ]
-
-
+            cols[app+config] += [
+                f'{hw_aware_util:.2f}'
+            ]
 
 
-print('\\begin{tabular}{lrrrrr}')
-print('\\hline')
-print(SEP.join(map(lambda s: s.ljust(15), cols['header-1'])), '\\\\ \\hline')
-print(SEP.join(map(lambda s: s.ljust(15), cols['header-2'])), '\\\\ \\hline')
 
-for app in apps:
-    print(SEP.join(map(lambda s: s.ljust(15), cols[app])), '\\\\')
+    print('\\begin{tabular}{lrrrrr}')
+    print('\\hline')
+    print(SEP.join(map(lambda s: s.ljust(15), cols['header-1'])), '\\\\ \\hline')
+    print(SEP.join(map(lambda s: s.ljust(15), cols['header-2'])), '\\\\ \\hline')
 
-print('\\hline')
-print('\\end{tabular}')
+    for app in apps:
+        print(SEP.join(map(lambda s: s.ljust(15), cols[app])), '\\\\')
+
+    print('\\hline')
+    print('\\end{tabular}')

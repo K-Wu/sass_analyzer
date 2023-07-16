@@ -27,7 +27,8 @@ print('\\begin{tabular}{lrrr}')
 print('\\textbf{{Op Name}} & \\textbf{{P100}} & \\textbf{{V100}} & \\textbf{{A100}} \\\\')
 print('\\hline')
 for app in utils.apps:
-    if app == 'nerf': continue
+    # TODO: change to our app if needed
+    # if app == 'nerf': continue
     traces = {}
     for plat in utils.plats:
         optrace_file = utils.get_optrace_file_lb(plat, app)
@@ -121,7 +122,8 @@ print('\\end{tabular}')
 
 for app in utils.apps:
     prettyname = utils.app_pretty_names[app]
-    if app == 'nerf': continue
+    # TODO: change to our app if needed
+    #if app == 'nerf': continue
     for plat in utils.plats:
 
         print(f'{prettyname.ljust(15)} {plat}: {totals[app + plat]} kernels for 80%')

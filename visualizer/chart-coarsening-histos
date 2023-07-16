@@ -60,5 +60,4 @@ axs[len(apps), 2].set_yscale('log')
 
 
 plt.tight_layout()
-os.makedirs('charts', exist_ok=True)
-plt.savefig('charts/coarse-histos.pdf')
+plt.savefig(os.path.join(utils.get_charts_path(),'coarse-histos.pdf'))

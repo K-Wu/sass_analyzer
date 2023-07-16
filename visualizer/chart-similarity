@@ -61,9 +61,8 @@ for i, app in enumerate(apps):
 
 plt.tight_layout()
 
-os.makedirs('charts', exist_ok=True)
 plt.subplots_adjust(wspace=0.2, hspace=0.0)
-plt.savefig('charts/similarities.pdf')
+plt.savefig(os.path.join(utils.get_charts_path(),'similarities.pdf'))
 
 
 

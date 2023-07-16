@@ -3,7 +3,6 @@ from .is_gemm import *
 from . import cache
 from ... import CASIO
 from .path_config import get_nsys_gputrace_file
-from .path_config import get_nsys_niter
 
 
 @dataclass
@@ -47,14 +46,6 @@ def read_nsys_trace(nsys_trace_file):
 
 
 def parse_nsys_kernsum(line):
-    # Time (%),Total Time (ns),Instances,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
-    regex = r'([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),(.*)'
-    m = re.match(regex, line)
-    assert m is not None, f'Failed to parse line: "{line}"'
-    return m.group(9)
-
-# Mike is in a hurry here. I'm sorry for the duplicate code
-def parse_nsys_kernsum2(line):
     # Time (%),Total Time (ns),Instances,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
     regex = r'([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),(.*)'
     m = re.match(regex, line)

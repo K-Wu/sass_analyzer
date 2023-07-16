@@ -93,24 +93,24 @@ def get_runlens(plat, app):
     return avg_runlength, np.array(run_lengths), np.array(run_bins), np.array(gemm_lengths), np.array(is_gemm)
 
 for i, app in enumerate(utils.apps):
-    #batch = utils.get_large_batch_size(plat, app)
-    raw_file = utils.get_ncu_raw_file(plat, app, batch)
-    prettyname = utils.app_pretty_names[app]
+    for config in utils.app_configs[app]:
+        raw_file = utils.get_ncu_raw_file(plat, app, config)
+        prettyname = utils.app_pretty_names[app]
 
-    avg, runlens, runbins, gemmlens, isgemm = get_runlens(plat, app)
+        avg, runlens, runbins, gemmlens, isgemm = get_runlens(plat, app)
 
-    labels.append(f'{prettyname} ({avg:.1f})')
+        labels.append(f'{prettyname} ({avg:.1f})')
 
-    ti = 0
-    for bin, rl in zip(runbins, runlens):
-        bin_idx = bins.bin_str_to_idx[bin]
-        ax.add_patch(Rectangle((ti, i*4), rl, 3, lw=1, facecolor=bins.colors[bin_idx]))
-        ti += rl
+        ti = 0
+        for bin, rl in zip(runbins, runlens):
+            bin_idx = bins.bin_str_to_idx[bin]
+            ax.add_patch(Rectangle((ti, i*4), rl, 3, lw=1, facecolor=bins.colors[bin_idx]))
+            ti += rl
 
-    ti = 0
-    for gemm, rl in zip(isgemm, gemmlens):
-        if gemm: ax.add_patch(Rectangle((ti, i*4), rl, 0.5, lw=1, facecolor='#000000'))
-        ti += rl
+        ti = 0
+        for gemm, rl in zip(isgemm, gemmlens):
+            if gemm: ax.add_patch(Rectangle((ti, i*4), rl, 0.5, lw=1, facecolor='#000000'))
+            ti += rl
 
 
 plt.xlabel('Fraction of Time', fontsize=6)
@@ -122,8 +122,4 @@ plt.xlim(0, 1.0)
 plt.ylim(0, 4 * len(utils.apps) - 1)
 # plt.legend(ncol=1, fontsize=6)
 plt.tight_layout(pad=0)
-os.makedirs('charts', exist_ok=True)
-plt.savefig('charts/app-snap.pdf')
-
-
-
+plt.savefig(os.path.join(utils.get_charts_path(),'app-snap.pdf'))

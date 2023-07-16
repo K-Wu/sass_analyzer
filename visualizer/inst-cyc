@@ -57,5 +57,4 @@ for i, app in enumerate(apps): #[:4]:
 
 
 plt.tight_layout()
-os.makedirs('charts', exist_ok=True)
-plt.savefig('charts/inst-cyc.pdf')
+plt.savefig(os.path.join(utils.get_charts_path(),'inst-cyc.pdf'))

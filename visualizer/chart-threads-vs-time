@@ -44,6 +44,5 @@ for i, app in enumerate(utils.apps):
     # axs[i].loglog()
 
 plt.tight_layout()
-os.makedirs('charts', exist_ok=True)
-plt.savefig('charts/threads-vs-time.pdf')
+plt.savefig(os.path.join(utils.get_charts_path(),'threads-vs-time.pdf'))
 

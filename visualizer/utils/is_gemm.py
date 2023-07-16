@@ -8,7 +8,7 @@ def strip_types(s : str):
         .replace('Eigen::half', '') \
         .replace('__half', '')
 
-gemm_kernels = set(map(lambda s: s.strip(), open(f'{CASIO}/scripts/gemm-kernels.txt').readlines()))
+gemm_kernels = set(map(lambda s: s.strip(), open(f'{CASIO}/visualizer/gemm-kernels.txt').readlines()))
 
 addl_gemm_kernels = set()
 for kname in gemm_kernels:

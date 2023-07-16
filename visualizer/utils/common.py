@@ -11,45 +11,20 @@ import glob
 COL_WIDTH = (8.5 - 1.5 - 0.25) / 2
 TEXT_WIDTH = 8.5 - 1.5
 
-# TODO: change to ours
 apps = [
-    'meshgraphnets-cfd',
-    'meshgraphnets-cloth',
-    'muzero',
-    'nerf',
-    # 'pinn-ac',
-    # 'pinn-kdv',
-    'pinn-navier-stokes',
-    'pinn-schrodinger',
-    'qdtrack',
-    'swin-swinv2_base_patch4_window12_192_22k',
-    # 'swin-swinv2_base_patch4_window16_256',
-    # 'swin-swinv2_large_patch4_window12_192_22k',
-    'swin-swinv2_large_patch4_window12to24_192to384_22kto1k_ft',
-    'tabnet',
-    'tacotron2',
-    'wavenet'
+    'rgcn',
+    'rgat',
+    'hgt'
 ]
 
-# TODO: change to ours
 app_pretty_names = {
-    'meshgraphnets-cfd': 'MGN-CFD',
-    'meshgraphnets-cloth': 'MGN-Cloth',
-    'muzero': 'MuZero',
-    'nerf': 'NeRF',
-    'pinn-ac': 'PINN-AC',
-    'pinn-kdv': 'PINN-KdV',
-    'pinn-navier-stokes': 'PINN-NS',
-    'pinn-schrodinger': 'PINN-Schr.',
-    'qdtrack': 'QDTrack',
-    'swin-swinv2_base_patch4_window12_192_22k': 'SwinV2-B-P',
-    'swin-swinv2_base_patch4_window16_256': 'SwinV2-B',
-    'swin-swinv2_large_patch4_window12_192_22k': 'SwinV2-L-PT',
-    'swin-swinv2_large_patch4_window12to24_192to384_22kto1k_ft': 'SwinV2-L-F',
-    'tabnet': 'TabNet',
-    'tacotron2': 'Tacotron2',
-    'wavenet': 'WaveNet'
+    'rgcn':'RGCN',
+    'rgat':'RGAT',
+    'hgt':'HGT'
 }
+
+raise NotImplementedError('TODO: implement app_configs')
+app_configs: dict[str, set[str]] = {}
 
 # TODO: change to a100, rtx3090
 plats = ['p100', 'v100', 'a100']

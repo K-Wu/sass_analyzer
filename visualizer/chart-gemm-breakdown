@@ -69,5 +69,4 @@ plt.legend(
     loc='upper left',)
 
 plt.tight_layout()
-os.makedirs('charts', exist_ok=True)
-plt.savefig('charts/gemm-breakdown.pdf')
+plt.savefig(os.path.join(utils.get_charts_path(),'gemm-breakdown.pdf'))
