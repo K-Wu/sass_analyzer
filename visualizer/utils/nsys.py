@@ -1,8 +1,9 @@
 from .common import *
 from .is_gemm import *
 from . import cache
-from ... import CASIO
+#from ... import CASIO
 from .path_config import get_nsys_gputrace_file
+from dataclasses import dataclass
 
 
 @dataclass

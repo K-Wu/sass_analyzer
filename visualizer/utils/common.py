@@ -23,12 +23,11 @@ app_pretty_names = {
     'hgt':'HGT'
 }
 
-raise NotImplementedError('TODO: implement app_configs')
-app_configs: dict[str, set[str]] = {}
 
 # TODO: change to a100, rtx3090
 plats = ['p100', 'v100', 'a100']
 
+# TODO: incorporate the representation and description here https://github.com/taichi-dev/taichi/blob/master/python/taichi/profiler/kernel_metrics.py
 stats_of_interest = [
     'gpc__cycles_elapsed.max',
     'sm__throughput.avg.pct_of_peak_sustained_elapsed',
@@ -135,3 +134,7 @@ def pick_clusters(dists, tol=0.05):
 
     return rep_list
 
+
+
+#raise NotImplementedError('TODO: implement app_configs')
+app_configs: dict[str, set[str]] = {}

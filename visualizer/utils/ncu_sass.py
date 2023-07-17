@@ -1,6 +1,7 @@
 from .common import *
-from ... import CASIO
-from .path_config import get_ncu_sass_file
+#from ... import CASIO
+#from .path_config import get_ncu_sass_file
+from dataclasses import dataclass
 
 @dataclass
 class SassInst:

@@ -1,6 +1,7 @@
 from .common import *
-from ... import CASIO
-from .path_config import get_optrace_file_lb
+#from ... import CASIO
+#from .path_config import get_optrace_file_lb
+from dataclasses import dataclass
 
 @dataclass
 class FrameworkOp:

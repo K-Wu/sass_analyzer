@@ -1,6 +1,6 @@
 from .common import *
-from ... import CASIO
-from .path_config import get_ncu_raw_file
+#from ... import CASIO
+#from .path_config import get_ncu_raw_file
 
 
 def read_ncu_raw_file(filename):
