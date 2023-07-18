@@ -20,47 +20,54 @@
 import numpy as np
 import sys
 import matplotlib
-matplotlib.use('Agg')
+
+matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 
+
 def roofline(mem_bandwidth, compute_roof, actual_arithmetic_intensity, actual_flops):
-        """compute_roof unit gflops
-        mem_bandwidth unit GB/s
-        arithmetic intensity unit flop/byte
-        actual_flops unit gflops"""
-        plt.figure()
-        
-        plt.title("Roofline") 
-        plt.xlabel("FLOP/B") 
-        plt.ylabel("GFLOPS") 
+    """compute_roof unit gflops
+    mem_bandwidth unit GB/s
+    arithmetic intensity unit flop/byte
+    actual_flops unit gflops"""
+    plt.figure()
 
-        y0=compute_roof
-        x0=y0/mem_bandwidth
+    plt.title("Roofline")
+    plt.xlabel("FLOP/B")
+    plt.ylabel("GFLOPS")
 
-        x = np.arange(0,5*x0) 
-        y = mem_bandwidth*x
-        plt.plot(x,y,ls="--",c="cornflowerblue") 
-        plt.axhline(y=y0,ls="--",c="orange")
+    y0 = compute_roof
+    x0 = y0 / mem_bandwidth
 
-        x1=actual_arithmetic_intensity
-        y1=actual_flops
-        plt.scatter([x1],[y1],s=300,marker="^")
+    x = np.arange(0, 5 * x0)
+    y = mem_bandwidth * x
+    plt.plot(x, y, ls="--", c="cornflowerblue")
+    plt.axhline(y=y0, ls="--", c="orange")
 
-        font={'weight':'normal',
-              'color':'black',
-              'size':8
-        }
-        plt.text(2*x0,1.1*y0,"y(GFLOPS) = %g"%(y0),fontdict=font)
-        plt.text(2*x0,1.9*y0,"y(GFLOPS) = %g(GB/S) * x(FLOP/B)"%(mem_bandwidth),fontdict=font)
-        plt.text(1.1*x1,y1,"(%g,%g)"%(x1,y1),fontdict=font)
+    x1 = actual_arithmetic_intensity
+    y1 = actual_flops
+    plt.scatter([x1], [y1], s=300, marker="^")
 
-        plt.xlim((0, max(5*x0, 1.5*x1)))
-        plt.ylim((0, 2*y0))
-        plt.grid(alpha=0.4)
+    font = {"weight": "normal", "color": "black", "size": 8}
+    plt.text(2 * x0, 1.1 * y0, "y(GFLOPS) = %g" % (y0), fontdict=font)
+    plt.text(
+        2 * x0,
+        1.9 * y0,
+        "y(GFLOPS) = %g(GB/S) * x(FLOP/B)" % (mem_bandwidth),
+        fontdict=font,
+    )
+    plt.text(1.1 * x1, y1, "(%g,%g)" % (x1, y1), fontdict=font)
 
-        plt.show(block=False)
-        #plt.savefig('roofline.png')
-        return plt
+    plt.xlim((0, max(5 * x0, 1.5 * x1)))
+    plt.ylim((0, 2 * y0))
+    plt.grid(alpha=0.4)
 
-if __name__=="__main__":
-    roofline(float(sys.argv[1]),float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]))
+    plt.show(block=False)
+    # plt.savefig('roofline.png')
+    return plt
+
+
+if __name__ == "__main__":
+    roofline(
+        float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4])
+    )

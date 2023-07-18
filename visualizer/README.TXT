@@ -11,7 +11,7 @@ get_bench_times.sh <output directory>
 	  (bash script uses get_bench_times.py python script
 	- env variable: __CASIO_ROOT__=/p/vertical/afs-huge3/casio
 	  (location of casio git repo, needed for $__CASIO_ROOT__/visualizer/get_bench_times.py]
-	  
+
 
 get_gemm_count_all.sh <output directory>
     [uses get_gemm.sh for each application]

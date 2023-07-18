@@ -1,92 +1,101 @@
 #!/usr/bin/env python
-#import matplotlib.pyplot as plt
-#import seaborn as sns
+# import matplotlib.pyplot as plt
+# import seaborn as sns
 import os
-#from scipy.spatial.distance import pdist
-#from scipy.spatial.distance import squareform
+
+# from scipy.spatial.distance import pdist
+# from scipy.spatial.distance import squareform
 from .utils.path_config import get_nsys_gpukernsum_file
 
 import numpy as np
 import utils
 
-def multicol(text, n): return f'\\multicolumn{{{n}}}{{c}}{{{text}}}'
-def bold(text): return f'\\textbf{{{text}}}'
+
+def multicol(text, n):
+    return f"\\multicolumn{{{n}}}{{c}}{{{text}}}"
+
+
+def bold(text):
+    return f"\\textbf{{{text}}}"
+
 
 def shorten_string(s, lim=50):
     if len(s) > lim:
-        return s[:lim - 3] + '...'
+        return s[: lim - 3] + "..."
     return s
+
 
 apps = utils.apps
 # TODO: change to our own apps if needed
 # apps.remove('tabnet')
 
 # https://developer.nvidia.com/blog/nvidia-ampere-architecture-in-depth/
-peak_compute_a100 = np.array([
-    19.5e12, # FP32 peak for A100
-    78e12,   # FP16 peak for A100
-    312e12,  # FP16 TC peak for A100
-])
+peak_compute_a100 = np.array(
+    [
+        19.5e12,  # FP32 peak for A100
+        78e12,  # FP16 peak for A100
+        312e12,  # FP16 TC peak for A100
+    ]
+)
 
-peak_compute_v100 = np.array([
-    15.7e12, # FP32 peak for A100
-    31.4e12,   # FP16 peak for A100
-    125e12,  # FP16 TC peak for A100
-])
+peak_compute_v100 = np.array(
+    [
+        15.7e12,  # FP32 peak for A100
+        31.4e12,  # FP16 peak for A100
+        125e12,  # FP16 TC peak for A100
+    ]
+)
 
 app_flops = {}
 
-SEP = ' & '
+SEP = " & "
 
 cols = {
-    'header-1': [
-        '',
-        multicol(bold('A100'), 2),
-        multicol(bold('V100'), 2),
-        multicol(bold('P100'), 1),
+    "header-1": [
+        "",
+        multicol(bold("A100"), 2),
+        multicol(bold("V100"), 2),
+        multicol(bold("P100"), 1),
     ],
-    'header-2': [
-        bold('Application'),
-        bold('FU \\%'),
-        bold('TC \\%'),
-        bold('FU \\%'),
-        bold('TC \\%'),
-        bold('FU \\%'),
-    ]
+    "header-2": [
+        bold("Application"),
+        bold("FU \\%"),
+        bold("TC \\%"),
+        bold("FU \\%"),
+        bold("TC \\%"),
+        bold("FU \\%"),
+    ],
 }
 
-cols.update({
-    app: [utils.app_pretty_names[app]]
-    for app in apps
-})
+cols.update({app: [utils.app_pretty_names[app]] for app in apps})
 
 # TODO: specify config
 for plat in utils.plats:
-    peak_compute = peak_compute_v100 if plat == 'v100' else peak_compute_a100
+    peak_compute = peak_compute_v100 if plat == "v100" else peak_compute_a100
     for i, app in enumerate(apps):
         thput = utils.throughput(plat, app, config)
         raw_file = utils.get_ncu_raw_file(plat, app, config)
 
-        if not os.path.exists(raw_file): continue
+        if not os.path.exists(raw_file):
+            continue
 
         knames, data = utils.read_ncu_raw_file_numpy(
             raw_file,
             [
-                'gpu__time_duration.sum',
-                'sm__pipe_fma_cycles_active.avg.pct_of_peak_sustained_elapsed',
-                'sm__inst_executed_pipe_fp16.avg.pct_of_peak_sustained_elapsed',
-                'sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed'
-            ])
+                "gpu__time_duration.sum",
+                "sm__pipe_fma_cycles_active.avg.pct_of_peak_sustained_elapsed",
+                "sm__inst_executed_pipe_fp16.avg.pct_of_peak_sustained_elapsed",
+                "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed",
+            ],
+        )
 
-        tot_time = data[:, 0].sum() # In Nanoseconds
+        tot_time = data[:, 0].sum()  # In Nanoseconds
         frac_time = data[:, 0] / tot_time
         kern_tops = (data[:, 1:] / 100) * peak_compute
         kern_hw_aware_tops = kern_tops.max(axis=1)
         idxs = kern_tops.argmax(axis=1) + 1
 
-        kern_hw_aware_util = np.array([
-            data[i, idxs[i]] for i in range(len(idxs))
-        ])
+        kern_hw_aware_util = np.array([data[i, idxs[i]] for i in range(len(idxs))])
 
         kern_tensor_util = kern_hw_aware_tops / peak_compute[-1] * 100
         hw_aware_flops = (kern_hw_aware_tops * frac_time).sum()
@@ -94,11 +103,12 @@ for plat in utils.plats:
         tensor_util = (kern_tensor_util * frac_time).sum()
 
         total_flops = hw_aware_flops * (1 / thput)
-        if plat == 'a100': app_flops[app] = total_flops
+        if plat == "a100":
+            app_flops[app] = total_flops
 
         cols[app] += [
-            f'{hw_aware_util:.2f}',
-            f'{tensor_util:.2f}',
+            f"{hw_aware_util:.2f}",
+            f"{tensor_util:.2f}",
         ]
 
 for plat in utils.plats:
@@ -108,8 +118,8 @@ for plat in utils.plats:
             niter = utils.get_niter(config)
 
             tot_time = 0
-            
-            with open(get_nsys_gpukernsum_file('p100', app, config)) as f:
+
+            with open(get_nsys_gpukernsum_file("p100", app, config)) as f:
                 next(f)
                 for line in f:
                     if not utils.is_blacklisted(line):
@@ -117,25 +127,22 @@ for plat in utils.plats:
                         if not utils.is_blacklisted(kname):
                             tot_time += ktime / 1e9 / niter
 
-            if app not in app_flops: continue
+            if app not in app_flops:
+                continue
 
             tot_app_flops = app_flops[app]
             hw_aware_flops = tot_app_flops / tot_time
             hw_aware_util = hw_aware_flops / 21.2e12 * 100
 
-            cols[app+config] += [
-                f'{hw_aware_util:.2f}'
-            ]
+            cols[app + config] += [f"{hw_aware_util:.2f}"]
 
-
-
-    print('\\begin{tabular}{lrrrrr}')
-    print('\\hline')
-    print(SEP.join(map(lambda s: s.ljust(15), cols['header-1'])), '\\\\ \\hline')
-    print(SEP.join(map(lambda s: s.ljust(15), cols['header-2'])), '\\\\ \\hline')
+    print("\\begin{tabular}{lrrrrr}")
+    print("\\hline")
+    print(SEP.join(map(lambda s: s.ljust(15), cols["header-1"])), "\\\\ \\hline")
+    print(SEP.join(map(lambda s: s.ljust(15), cols["header-2"])), "\\\\ \\hline")
 
     for app in apps:
-        print(SEP.join(map(lambda s: s.ljust(15), cols[app])), '\\\\')
+        print(SEP.join(map(lambda s: s.ljust(15), cols[app])), "\\\\")
 
-    print('\\hline')
-    print('\\end{tabular}')
+    print("\\hline")
+    print("\\end{tabular}")
