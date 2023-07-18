@@ -1,16 +1,18 @@
 import pandas as pd
-import pdb
+
+# import pdb
 import sys
 import tempfile
-from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA
+
+# from sklearn.preprocessing import StandardScaler
+# from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.spatial.distance import pdist
 from scipy.spatial.distance import squareform
 
 # import seaborn as sns
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 
 stats_of_interest = [
@@ -80,7 +82,7 @@ def get_df(filename):
     ft = open(tmp.name, "r")
     df = pd.read_csv(ft, low_memory=False, thousands=r",")
     ft.close()
-    column_names = list(df.columns.values)
+    # column_names = list(df.columns.values)
     # print(*column_names, sep='\n')
     # quit()
     # 'launch__thread_count', 'launch__block_size', 'launch__thread_count', 'launch__waves_per_multiprocessor', 'launch__registers_per_thread']
