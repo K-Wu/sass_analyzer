@@ -6,7 +6,8 @@
 #import numpy as np
 #import pandas as pd
 #import glob
-
+import subprocess
+from typing import Tuple
 
 COL_WIDTH = (8.5 - 1.5 - 0.25) / 2
 TEXT_WIDTH = 8.5 - 1.5
@@ -134,7 +135,36 @@ def pick_clusters(dists, tol=0.05):
 
     return rep_list
 
+def get_configs() -> Tuple[list[str], list[str], str, str]:
+    """
+    config_patten="\$mf.\${c//[[:blank:]]/}.\$dimx.\$dimy.1" where .1 means number of heads; and model $m and dataset $d are not involved.
+
+    the following defines the range of RGAT and HGT parameters.
+    declare -a MODELS=("RGAT" "HGT") 
+    declare -a CompactFlag=("--compact_as_of_node_flag" "" "--compact_as_of_node_flag --compact_direct_indexing_flag")
+    declare -a MulFlag=("--multiply_among_weights_first_flag" "")
+    declare -a Datasets=("aifb" "mutag" "bgs" "am" "mag" "wikikg2" "fb15k" "biokg")
+    DimsX=( 32 64 128 )
+    DimsY=( 32 64 128 )
+
+    For RGCN, we have the following as true
+    m="RGCN"
+    mf=""
+    """
+    config_rgcn_list:list[str]=[]
+    config_rgat_hgt_list:list[str]=[]
+    for c_raw in ['--compact_as_of_node_flag', '', "--compact_as_of_node_flag --compact_direct_indexing_flag"]:
+        c_stripped = c_raw.replace(' ', '')
+        for dimx in [32, 64, 128]:
+            for dimy in [32, 64, 128]:
+                for mf in ['--multiply_among_weights_first_flag', '']:
+                    config_rgat_hgt_list.append(f'{mf}.{c_stripped}.{dimx}.{dimy}.1')
+                mf = ""
+                config_rgcn_list.append(f'{mf}.{c_stripped}.{dimx}.{dimy}.1')
+    config_rgcn_default = "..64.64.1"
+    config_rgat_hgt_default = "..64.64.1"
+    return config_rgcn_list, config_rgat_hgt_list, config_rgcn_default, config_rgat_hgt_default
 
 
-#raise NotImplementedError('TODO: implement app_configs')
-app_configs: dict[str, set[str]] = {}
+app_configs: dict[str, set[str]] = {"RGCN": set(get_configs()[0]), "RGAT": set(get_configs()[1]), "HGT": set(get_configs()[1])}
+app_default_conig: dict[str,str] = {"RGCN": get_configs()[2], "RGAT": get_configs()[3], "HGT": get_configs()[3]}

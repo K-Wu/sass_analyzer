@@ -1,0 +1,9 @@
+# TODO: work on this
+raise NotImplementedError
+
+
+# AchievedWork: (smsp__sass_thread_inst_executed_op_fadd_pred_on.sum.per_cycle_elapsed + smsp__sass_thread_inst_executed_op_fmul_pred_on.sum.per_cycle_elapsed + derived__smsp__sass_thread_inst_executed_op_ffma_pred_on_x2) * smsp__cycles_elapsed.avg.per_second
+# Achieved traffic: L1 Cache Bandwidth (Global/Local): derived__l1tex__lsu_writeback_bytes_mem_lg.sum.per_second
+# L2 Cache Bandwidth: l1tex__m_xbar2l1tex_read_bytes.sum.per_second
+# DRAM Bandwidth: dram__bytes.sum.per_second
+# Compute roof: derived__sm__sass_thread_inst_executed_op_ffma_pred_on_x2 * smsp__cycles_elapsed.avg.per_second

@@ -110,3 +110,6 @@ def get_nsys_gpukernsum_file(plat: str, app: str, config: str) -> str:
 def get_charts_path() -> str:
     os.makedirs(f"{__CASIO_ROOT__}/results/charts", exist_ok=True)
     return f"{__CASIO_ROOT__}/results/charts"
+
+# pattern of raw traces from the HET project
+trace_pattern= r"misc/artifacts/(?P<tracetype>benchmark_all_|ncu_breakdown_|nsys_trace_)(?P<time>\d{4}\d{2}\d{2}\d{4})/(?P<model>.*?)\.(?P<dataset>.*?)\.(?P<config>.*?)(?P<filetype>\.result\.log|\.ncu-rep|\.nsys-rep)"
