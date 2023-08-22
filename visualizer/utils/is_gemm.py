@@ -1,14 +1,22 @@
 from .common import *
 from ... import __CASIO_ROOT__
 
-def strip_types(s : str):
-    return s \
-        .replace('long long', '') \
-        .replace('long', '') \
-        .replace('Eigen::half', '') \
-        .replace('__half', '')
 
-gemm_kernels = set(map(lambda s: s.strip(), open(f'{__CASIO_ROOT__}/visualizer/gemm-kernels.txt').readlines()))
+def strip_types(s: str):
+    return (
+        s.replace("long long", "")
+        .replace("long", "")
+        .replace("Eigen::half", "")
+        .replace("__half", "")
+    )
+
+
+gemm_kernels = set(
+    map(
+        lambda s: s.strip(),
+        open(f"{__CASIO_ROOT__}/visualizer/gemm-kernels.txt").readlines(),
+    )
+)
 
 addl_gemm_kernels = set()
 for kname in gemm_kernels:
@@ -16,6 +24,8 @@ for kname in gemm_kernels:
 
 
 def is_gemm(kname):
-    if kname in gemm_kernels: return True
-    if strip_types(kname) in addl_gemm_kernels: return True
+    if kname in gemm_kernels:
+        return True
+    if strip_types(kname) in addl_gemm_kernels:
+        return True
     return False

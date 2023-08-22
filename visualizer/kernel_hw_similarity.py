@@ -150,7 +150,8 @@ sns.heatmap(df4)
 plt.show()
 for x in keep_list:
     print(
-        "rep-kernel-id: ", x, df.loc[x + 1, :].to_list(), df_names["Kernel Name"][x + 1]
+        "rep-kernel-id: ", x, df.loc[x + 1,
+                                     :].to_list(), df_names["Kernel Name"][x + 1]
     )
 for x in set_of_kernel_names:
     print("Uniq-kernel-name: ", x)

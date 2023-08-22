@@ -159,7 +159,8 @@ def get_configs() -> Tuple[list[str], list[str], str, str]:
         for dimx in [32, 64, 128]:
             for dimy in [32, 64, 128]:
                 for mf in ["--multiply_among_weights_first_flag", ""]:
-                    config_rgat_hgt_list.append(f"{mf}.{c_stripped}.{dimx}.{dimy}.1")
+                    config_rgat_hgt_list.append(
+                        f"{mf}.{c_stripped}.{dimx}.{dimy}.1")
                 mf = ""
                 config_rgcn_list.append(f"{mf}.{c_stripped}.{dimx}.{dimy}.1")
     config_rgcn_default = "..64.64.1"

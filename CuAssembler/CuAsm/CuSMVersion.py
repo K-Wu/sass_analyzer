@@ -178,7 +178,8 @@ class CuSMVersion(object):
         ]
     )
     POSDEP_Opcodes_SM5x6x = POSDEP_Opcodes_Common.union(
-        set(["XMAD", "IMAD", "IMAD32I", "IMADSP", "IMUL", "IMUL32I", "PSET", "PSETP"])
+        set(["XMAD", "IMAD", "IMAD32I", "IMADSP",
+            "IMUL", "IMUL32I", "PSET", "PSETP"])
     )
     POSDEP_Opcodes_SM7x = POSDEP_Opcodes_Common.union(set(["HMMA", "IMMA"]))
     POSDEP_Opcodes_SM8x = POSDEP_Opcodes_Common.union(
@@ -515,7 +516,7 @@ class CuSMVersion(object):
         ins_code_list = []
 
         for i in range(0, len(int_list), 4):
-            ccode, c0, c1, c2 = tuple(int_list[i : i + 4])
+            ccode, c0, c1, c2 = tuple(int_list[i: i + 4])
             cc = [
                 (ccode & CuSMVersion.CCMask0_5x_6x) >> CuSMVersion.CCPos0_5x_6x,
                 (ccode & CuSMVersion.CCMask1_5x_6x) >> CuSMVersion.CCPos1_5x_6x,
@@ -622,8 +623,8 @@ class CuSMVersion(object):
         nccode_intact = n_ins // 3  # intact part of control code groups (1+3)
         for i in range(nccode_intact):
             cc, i0, i1, i2 = CuSMVersion.remixCode_5x_6x(
-                *ins_code_list[3 * i : 3 * (i + 1)],
-                *ctrl_code_list[3 * i : 3 * (i + 1)],
+                *ins_code_list[3 * i: 3 * (i + 1)],
+                *ctrl_code_list[3 * i: 3 * (i + 1)],
             )
             bio.write(cc.to_bytes(8, "little"))
             bio.write(i0.to_bytes(8, "little"))
@@ -632,8 +633,8 @@ class CuSMVersion(object):
 
         if nccode_intact * 3 != n_ins:
             ntail = n_ins - nccode_intact * 3
-            t_ctrl_code_list = ctrl_code_list[3 * nccode_intact :]
-            t_ins_code_list = ins_code_list[3 * nccode_intact :]
+            t_ctrl_code_list = ctrl_code_list[3 * nccode_intact:]
+            t_ins_code_list = ins_code_list[3 * nccode_intact:]
 
             npad = 3 - ntail
             for i in range(npad):
@@ -661,7 +662,8 @@ class CuSMVersion(object):
 
         bio = BytesIO()
         for i in range(n_ins):
-            code = (ctrl_code_list[i] << CuSMVersion.CCPos_7x_8x) + ins_code_list[i]
+            code = (ctrl_code_list[i] <<
+                    CuSMVersion.CCPos_7x_8x) + ins_code_list[i]
             bio.write(code.to_bytes(16, "little"))
 
         return bio.getvalue()

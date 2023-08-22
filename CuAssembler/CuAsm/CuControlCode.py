@@ -115,7 +115,8 @@ class CuControlCode:
         if not c_ControlCodesPattern.match(s):
             raise ValueError("Invalid control code strings: %s !!!" % s)
 
-        s_waitbar, s_readbar, s_writebar, s_yield, s_stall = tuple(s.split(":"))
+        s_waitbar, s_readbar, s_writebar, s_yield, s_stall = tuple(
+            s.split(":"))
 
         waitbar_tr = str.maketrans("012345-", "1111110")
 

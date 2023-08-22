@@ -289,12 +289,21 @@ class CuInsFeeder:
     @staticmethod
     def parseInsFilter(insfilter):
         if insfilter is None or insfilter == "":
-            InsFilterFun = lambda x: True
+
+            def InsFilterFun(x):
+                return True
+
         elif isinstance(insfilter, str):
             p = re.compile(insfilter)
-            InsFilterFun = lambda x: p.search(x)
+
+            def InsFilterFun(x):
+                return p.search(x)
+
         elif isinstance(insfilter, re.Pattern):
-            InsFilterFun = lambda x: insfilter.search(x)
+
+            def InsFilterFun(x):
+                return insfilter.search(x)
+
         elif callable(insfilter):
             InsFilterFun = insfilter
         else:
@@ -404,9 +413,15 @@ class CuInsFeeder:
             fout_stream = fout
 
         if codeonly_line_mode == "keep":
-            pCodeLine = lambda ctrl_str, l: f"{ctrl_str}  {l}\n"
+
+            def pCodeLine(ctrl_str, l):
+                return f"{ctrl_str}  {l}\n"
+
         elif codeonly_line_mode == "none":
-            pCodeLine = lambda ctrl_str, l: None
+
+            def pCodeLine(ctrl_str, l):
+                return None
+
         else:
             pass
 
@@ -447,7 +462,8 @@ class CuInsFeeder:
                             lcode = l.strip()
                             out_buffers[-1] = out_buffers[-1], lcode
                         else:
-                            ctrl_str = self.formatCtrlCodeString(0, phantom_mode=True)
+                            ctrl_str = self.formatCtrlCodeString(
+                                0, phantom_mode=True)
                             oline = pCodeLine(ctrl_str, l)
                             if oline is not None:
                                 out_buffers.append(oline)
@@ -584,7 +600,7 @@ class CuInsFeeder:
 
         return self.__mLineNo
 
-    #### subroutines for operation ins queue
+    # subroutines for operation ins queue
     def __pushAddr(self, addr):
         self.__mAddrList.append(addr)
 
@@ -626,7 +642,8 @@ class CuInsFeeder:
     def __SplitCodeList_7x8x(self, int_list):
         """Split code list to (ctrl_list, code_list)."""
 
-        cs = [int_list[i] + (int_list[i + 1] << 64) for i in range(0, len(int_list), 2)]
+        cs = [int_list[i] + (int_list[i + 1] << 64)
+              for i in range(0, len(int_list), 2)]
         return CuSMVersion.splitCtrlCodeFromIntList_7x_8x(cs)
 
     def __iterPopIns(self):
@@ -672,7 +689,7 @@ class CuInsFeeder:
             f"CuInsFeeder Message: {msg} @Line{self.__mLineNo-1:04d}"
         )
 
-    #### Subroutines for constructing StateTransferMatrix
+    # Subroutines for constructing StateTransferMatrix
     def __getTrMatrixDefault(self):
         stm = StateTransferMatrix()
         stm.addop_dict(
@@ -730,12 +747,18 @@ class CuInsFeeder:
         stm.addop(PS.WaitForCode1, SLT.CodeOnly, PS.WaitForIns7, None)
 
         # 7 InsCode as a chain, no explicit dual issue
-        stm.addop(PS.WaitForIns7, SLT.InsCode, PS.WaitForIns6, self.__pushInsCode_3x)
-        stm.addop(PS.WaitForIns6, SLT.InsCode, PS.WaitForIns5, self.__pushInsCode_3x)
-        stm.addop(PS.WaitForIns5, SLT.InsCode, PS.WaitForIns4, self.__pushInsCode_3x)
-        stm.addop(PS.WaitForIns4, SLT.InsCode, PS.WaitForIns3, self.__pushInsCode_3x)
-        stm.addop(PS.WaitForIns3, SLT.InsCode, PS.WaitForIns2, self.__pushInsCode_3x)
-        stm.addop(PS.WaitForIns2, SLT.InsCode, PS.WaitForIns1, self.__pushInsCode_3x)
+        stm.addop(PS.WaitForIns7, SLT.InsCode,
+                  PS.WaitForIns6, self.__pushInsCode_3x)
+        stm.addop(PS.WaitForIns6, SLT.InsCode,
+                  PS.WaitForIns5, self.__pushInsCode_3x)
+        stm.addop(PS.WaitForIns5, SLT.InsCode,
+                  PS.WaitForIns4, self.__pushInsCode_3x)
+        stm.addop(PS.WaitForIns4, SLT.InsCode,
+                  PS.WaitForIns3, self.__pushInsCode_3x)
+        stm.addop(PS.WaitForIns3, SLT.InsCode,
+                  PS.WaitForIns2, self.__pushInsCode_3x)
+        stm.addop(PS.WaitForIns2, SLT.InsCode,
+                  PS.WaitForIns1, self.__pushInsCode_3x)
         stm.addop(PS.WaitForIns1, SLT.InsCode, PS.Ready, self.__pushInsCode_3x)
 
         return stm
@@ -758,21 +781,28 @@ class CuInsFeeder:
         # stm.addop(PS.WaitForCode4, SLT.CodeOnly, PS.WaitForIns3, self.__pushCtrl_5x6x)
 
         # 3->2
-        stm.addop(PS.WaitForIns3, SLT.InsCode, PS.WaitForIns2, self.__pushInsCode)
+        stm.addop(PS.WaitForIns3, SLT.InsCode,
+                  PS.WaitForIns2, self.__pushInsCode)
         # wait for code of the ins (dual-issued: 3/3 of last pack4 + 1/3 of current pack4)
-        stm.addop(PS.WaitForIns3, SLT.InsOnly, PS.WaitForCode3, self.__pushInsOnly_5x6x)
-        stm.addop(PS.WaitForCode3, SLT.CodeOnly, PS.WaitForIns2, self.__pushCode)
+        stm.addop(PS.WaitForIns3, SLT.InsOnly,
+                  PS.WaitForCode3, self.__pushInsOnly_5x6x)
+        stm.addop(PS.WaitForCode3, SLT.CodeOnly,
+                  PS.WaitForIns2, self.__pushCode)
 
         # 2->1
-        stm.addop(PS.WaitForIns2, SLT.InsCode, PS.WaitForIns1, self.__pushInsCode)
+        stm.addop(PS.WaitForIns2, SLT.InsCode,
+                  PS.WaitForIns1, self.__pushInsCode)
         # wait for code of the ins (dual-issued: 1/3 + 2/3 of current pack4)
-        stm.addop(PS.WaitForIns2, SLT.InsOnly, PS.WaitForCode2, self.__pushInsOnly_5x6x)
-        stm.addop(PS.WaitForCode2, SLT.CodeOnly, PS.WaitForIns1, self.__pushCode)
+        stm.addop(PS.WaitForIns2, SLT.InsOnly,
+                  PS.WaitForCode2, self.__pushInsOnly_5x6x)
+        stm.addop(PS.WaitForCode2, SLT.CodeOnly,
+                  PS.WaitForIns1, self.__pushCode)
 
         # 1-> ready
         stm.addop(PS.WaitForIns1, SLT.InsCode, PS.Ready, self.__pushInsCode)
         # wait for code of the ins (dual-issued: 2/3 + 3/3 of current pack4)
-        stm.addop(PS.WaitForIns1, SLT.InsOnly, PS.WaitForCode1, self.__pushInsOnly_5x6x)
+        stm.addop(PS.WaitForIns1, SLT.InsOnly,
+                  PS.WaitForCode1, self.__pushInsOnly_5x6x)
         stm.addop(PS.WaitForCode1, SLT.CodeOnly, PS.Ready, self.__pushCode)
 
         return stm
@@ -796,7 +826,8 @@ class CuInsFeeder:
         )
 
         # 1 InsCode + 1 CodeOnly
-        stm.addop(PS.WaitForIns1, SLT.InsCode, PS.WaitForCode1, self.__pushInsCode)
+        stm.addop(PS.WaitForIns1, SLT.InsCode,
+                  PS.WaitForCode1, self.__pushInsCode)
         stm.addop(PS.WaitForCode1, SLT.CodeOnly, PS.Ready, self.__pushCode)
 
         return stm
