@@ -17,12 +17,12 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 # From https://github.com/IntelLabs/t2sp/blob/master/t2s/src/Roofline.py
 ###############################################################################
+from matplotlib import pyplot as plt
 import numpy as np
 import sys
 import matplotlib
 
 matplotlib.use("Agg")
-from matplotlib import pyplot as plt
 
 
 def roofline(mem_bandwidth, compute_roof, actual_arithmetic_intensity, actual_flops):
@@ -69,5 +69,6 @@ def roofline(mem_bandwidth, compute_roof, actual_arithmetic_intensity, actual_fl
 
 if __name__ == "__main__":
     roofline(
-        float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4])
+        float(sys.argv[1]), float(sys.argv[2]), float(
+            sys.argv[3]), float(sys.argv[4])
     )

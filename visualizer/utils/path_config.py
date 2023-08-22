@@ -7,23 +7,23 @@ from ... import __CASIO_ROOT__
 # raw results (now ignoring the summaries) {__CASIO_ROOT__}/casio-results/raw/{plat}/{app}/     file could be nsys|ncu|bench*b{batch}-*.
 # This includes
 # bench <- f'{__CASIO_ROOT__}/casio-results/{plat}/{app}/bench-{app}-train-b{batch}-n*.txt'
-## # gpukernsum_file=f'{__CASIO_ROOT__}/casio-results/summaries/{plat}/{app}/batch-{batch}_gpukernsum.csv'
-## # ncu_raw.py <- f'{__CASIO_ROOT__}/casio-results/{plat}/{app}/ncu-{samp}-{app}-train-b{batch}-raw.csv'
-## # ncu_sass.py '{__CASIO_ROOT__}/casio-results/{plat}/{app}/ncu-{samp}-{app}-train-b{batch}-sass.csv'
-## # nsys f'{__CASIO_ROOT__}/casio-results/summaries/{plat}/{app}/batch-{batch}_gputrace.csv.gz'
-## # nsys f'{__CASIO_ROOT__}/casio-results/{plat}/{app}/nsys*b{batch}-*.nsys-rep'
+# gpukernsum_file=f'{__CASIO_ROOT__}/casio-results/summaries/{plat}/{app}/batch-{batch}_gpukernsum.csv'
+# ncu_raw.py <- f'{__CASIO_ROOT__}/casio-results/{plat}/{app}/ncu-{samp}-{app}-train-b{batch}-raw.csv'
+# ncu_sass.py '{__CASIO_ROOT__}/casio-results/{plat}/{app}/ncu-{samp}-{app}-train-b{batch}-sass.csv'
+# nsys f'{__CASIO_ROOT__}/casio-results/summaries/{plat}/{app}/batch-{batch}_gputrace.csv.gz'
+# nsys f'{__CASIO_ROOT__}/casio-results/{plat}/{app}/nsys*b{batch}-*.nsys-rep'
 # get_optrace <- f'{__CASIO_ROOT__}/casio-results/{plat}/{app}/*b{batch}-*'
 
 # after initial processing {__CASIO_ROOT__}/casio-results/processed
-## # get_optrace_file_lb (fwops.py) <- '{__CASIO_ROOT__}/casio-results/postproc/{plat}/{app}/op-trace-large-batch.csv'
-## # format of the op-trace.csv
-### ## The format of the csv file
-### ## op, accel_time
-### ## op, accel_time
-### ## ...
+# get_optrace_file_lb (fwops.py) <- '{__CASIO_ROOT__}/casio-results/postproc/{plat}/{app}/op-trace-large-batch.csv'
+# format of the op-trace.csv
+# The format of the csv file
+# op, accel_time
+# op, accel_time
+# ...
 
-## cache /cache stored the intermediate results from the same program in previous run.
-## opcodes  (records all the op types extracted from sass) <- {__CASIO_ROOT__}/results/crcache
+# cache /cache stored the intermediate results from the same program in previous run.
+# opcodes  (records all the op types extracted from sass) <- {__CASIO_ROOT__}/results/crcache
 cache_file = f"{__CASIO_ROOT__}/results/crcache/opcodes.txt"
 
 
@@ -111,5 +111,6 @@ def get_charts_path() -> str:
     os.makedirs(f"{__CASIO_ROOT__}/results/charts", exist_ok=True)
     return f"{__CASIO_ROOT__}/results/charts"
 
+
 # pattern of raw traces from the HET project
-trace_pattern= r"misc/artifacts/(?P<tracetype>benchmark_all_|ncu_breakdown_|nsys_trace_)(?P<time>\d{4}\d{2}\d{2}\d{4})/(?P<model>.*?)\.(?P<dataset>.*?)\.(?P<config>.*?)(?P<filetype>\.result\.log|\.ncu-rep|\.nsys-rep)"
+trace_pattern = r"misc/artifacts/(?P<tracetype>benchmark_all_|ncu_breakdown_|nsys_trace_)(?P<time>\d{4}\d{2}\d{2}\d{4})/(?P<model>.*?)\.(?P<dataset>.*?)\.(?P<config>.*?)(?P<filetype>\.result\.log|\.ncu-rep|\.nsys-rep)"

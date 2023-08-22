@@ -132,7 +132,8 @@ class CuAsmLogger(object):
 
             # default mode is 'a', but we may want a new log for every run, but still keeping old logs as backup.
             if needsRollOver:
-                print(f"Logfile {full_log_file} already exists! Rolling over...")
+                print(
+                    f"Logfile {full_log_file} already exists! Rolling over...")
                 fh.doRollover()
 
             fh.setFormatter(fmt)
@@ -187,22 +188,26 @@ class CuAsmLogger(object):
     @staticmethod
     def logEntry(msg, *args, **kwargs):
         full_msg = "   ENTRY - " + CuAsmLogger.__IndentString + msg
-        CuAsmLogger.__CurrLogger.log(CuAsmLogger.ENTRY, full_msg, *args, **kwargs)
+        CuAsmLogger.__CurrLogger.log(
+            CuAsmLogger.ENTRY, full_msg, *args, **kwargs)
 
     @staticmethod
     def logProcedure(msg, *args, **kwargs):
         full_msg = "    PROC - " + CuAsmLogger.__IndentString + msg
-        CuAsmLogger.__CurrLogger.log(CuAsmLogger.PROCEDURE, full_msg, *args, **kwargs)
+        CuAsmLogger.__CurrLogger.log(
+            CuAsmLogger.PROCEDURE, full_msg, *args, **kwargs)
 
     @staticmethod
     def logSubroutine(msg, *args, **kwargs):
         full_msg = "     SUB - " + CuAsmLogger.__IndentString + msg
-        CuAsmLogger.__CurrLogger.log(CuAsmLogger.SUBROUTINE, full_msg, *args, **kwargs)
+        CuAsmLogger.__CurrLogger.log(
+            CuAsmLogger.SUBROUTINE, full_msg, *args, **kwargs)
 
     @staticmethod
     def logLiteral(msg, *args, **kwargs):
         full_msg = "         - " + CuAsmLogger.__IndentString + msg
-        CuAsmLogger.__CurrLogger.log(CuAsmLogger.PROCEDURE, full_msg, *args, **kwargs)
+        CuAsmLogger.__CurrLogger.log(
+            CuAsmLogger.PROCEDURE, full_msg, *args, **kwargs)
 
     @staticmethod
     def log(level, msg, *args, **kwargs):
@@ -222,7 +227,8 @@ class CuAsmLogger(object):
 
             CuAsmLogger.decIndent()
             CuAsmLogger.logLiteral(
-                "Func %s completed! Time=%8.4f secs." % (func.__qualname__, t1 - t0)
+                "Func %s completed! Time=%8.4f secs." % (
+                    func.__qualname__, t1 - t0)
             )
 
             return ret
