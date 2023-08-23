@@ -1,23 +1,25 @@
 from .common import *
-#from ... import CASIO
-#from .path_config import get_ncu_sass_file
+
+# from ... import CASIO
+# from .path_config import get_ncu_sass_file
 from dataclasses import dataclass
+
 
 @dataclass
 class SassInst:
-    pc : str
-    opcode : str
-    inst_exec : int
-    thread_inst_exec : int
+    pc: str
+    opcode: str
+    inst_exec: int
+    thread_inst_exec: int
 
 
 @dataclass
 class Kernel:
-    name : str
+    name: str
     # ncalls : int
-    trace : list[SassInst]
+    trace: list[SassInst]
 
-    def to_feature_vector(self, opcode_map : dict[str, int]):
+    def to_feature_vector(self, opcode_map: dict[str, int]):
         features = np.zeros(len(opcode_map))
         for inst in self.trace:
             features[opcode_map[inst.opcode]] += inst.inst_exec
@@ -26,19 +28,22 @@ class Kernel:
 
 
 def parse_sass_opcode(raw_opcode):
-    opcode = raw_opcode[5:].split(' ')[0].strip()
-    if len(opcode) <= 1: opcode = raw_opcode[6:].split(' ')[0].strip()
-    assert len(opcode) > 1, f'Failed to parse opcode from {raw_opcode}'
+    opcode = raw_opcode[5:].split(" ")[0].strip()
+    if len(opcode) <= 1:
+        opcode = raw_opcode[6:].split(" ")[0].strip()
+    assert len(opcode) > 1, f"Failed to parse opcode from {raw_opcode}"
     return opcode
+
 
 def kernels_are_equal(k1, k2):
     for i, (i1, i2) in enumerate(zip(k1.trace, k2.trace)):
         if i1 != i2:
-            print(f'Kernel {k1.name} has different traces at index {i}!')
-            print(f'  {i1} != {i2}')
+            print(f"Kernel {k1.name} has different traces at index {i}!")
+            print(f"  {i1} != {i2}")
             return False
 
     return True
+
 
 # TODO: improve this with the one by cloudcores
 def parse_ncu_sass(filename):
@@ -52,11 +57,12 @@ def parse_ncu_sass(filename):
             if line.startswith('"Kernel Name"'):
                 if capture:
                     kern = Kernel(kname, trace)
-                    if not is_blacklisted(kname): kernels.append(kern)
+                    if not is_blacklisted(kname):
+                        kernels.append(kern)
                     capture = False
 
                 m = re.match(r'"Kernel Name",\s*"(.+)"', line)
-                assert m, f'Failed to parse kernel name from {line}'
+                assert m, f"Failed to parse kernel name from {line}"
                 kname = m.group(1)
 
                 ignore = False
@@ -69,14 +75,24 @@ def parse_ncu_sass(filename):
                     trace = []
 
             elif capture and not line.startswith('"Address","Source"'):
-                m = re.match(r'^\"(\w+)\",\"([^\"]+)\",\"(\d+)\",\"(\d+)\",\"(\d+)\",\"(\d+)\"', line)
+                m = re.match(
+                    r"^\"(\w+)\",\"([^\"]+)\",\"(\d+)\",\"(\d+)\",\"(\d+)\",\"(\d+)\"",
+                    line,
+                )
                 assert m is not None, line
-                trace.append(SassInst(m.group(1), parse_sass_opcode(m.group(2)), int(m.group(5)), int(m.group(6))))
+                trace.append(
+                    SassInst(
+                        m.group(1),
+                        parse_sass_opcode(m.group(2)),
+                        int(m.group(5)),
+                        int(m.group(6)),
+                    )
+                )
 
     return kernels
 
 
-def ncu_sass_opcodes(kernels : list[Kernel]):
+def ncu_sass_opcodes(kernels: list[Kernel]):
     opcodes = set()
     for k in kernels:
         for inst in k.trace:
@@ -84,19 +100,22 @@ def ncu_sass_opcodes(kernels : list[Kernel]):
 
     return opcodes
 
-def ncu_sass_stats(kernels : list[Kernel]):
-    k : Kernel
-    addr_map : dict[str, int] = {}
-    opcode_map : dict[str, int] = {}
+
+def ncu_sass_stats(kernels: list[Kernel]):
+    k: Kernel
+    addr_map: dict[str, int] = {}
+    opcode_map: dict[str, int] = {}
     total_dyn_inst = 0
 
     for k in kernels:
-        inst : SassInst
+        inst: SassInst
         for inst in k.trace:
-            if inst.pc not in addr_map: addr_map[inst.pc] = 0
+            if inst.pc not in addr_map:
+                addr_map[inst.pc] = 0
             addr_map[inst.pc] += inst.thread_inst_exec
 
-            if inst.opcode not in opcode_map: opcode_map[inst.opcode] = 0
+            if inst.opcode not in opcode_map:
+                opcode_map[inst.opcode] = 0
             opcode_map[inst.opcode] += inst.thread_inst_exec
 
             total_dyn_inst += inst.thread_inst_exec
