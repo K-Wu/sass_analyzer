@@ -31,6 +31,12 @@ class Kernel:
 
         return features
 
+    def __eq__(self, other):
+        return self.name == other.name and kernels_are_equal(self, other)
+
+    def __hash__(self):
+        return id(self)
+
 
 def parse_sass_opcode(raw_opcode):
     opcode = raw_opcode[5:].split(" ")[0].strip()
@@ -114,23 +120,61 @@ def ncu_sass_opcodes(kernels: list[Kernel]):
     return opcodes
 
 
-def ncu_sass_stats(kernels: list[Kernel]):
-    k: Kernel
-    addr_map: dict[str, int] = {}
-    opcode_map: dict[str, int] = {}
-    total_dyn_inst = 0
+def merge_per_kernel_stat_into_program_stat(
+    stat_per_kernel: dict[Kernel, dict[str, int]]
+) -> dict[str, int]:
+    stat: dict[str, int] = {}
+    for k, v in stat_per_kernel.items():
+        for k2, v2 in v.items():
+            if k2 not in stat:
+                stat[k2] = 0
+            stat[k2] += v2
 
+    return stat
+
+
+def ncu_sass_stats_all_kernels(
+    kernels: list[Kernel],
+) -> tuple[
+    dict[Kernel, dict[str, int]],
+    dict[Kernel, dict[str, int]],
+    dict[Kernel, int],
+]:
+    addr_map_per_kernel: dict[Kernel, dict[str, int]] = {}
+    opcode_map_per_kernel: dict[Kernel, dict[str, int]] = {}
+    total_dyn_inst_per_kernel: dict[Kernel, int] = {}
+
+    k: Kernel  # loop variable type annotation
     for k in kernels:
-        inst: SassInst
+        addr_map_per_kernel[k] = {}
+        opcode_map_per_kernel[k] = {}
+        total_dyn_inst_per_kernel[k] = 0
+        inst: SassInst  # loop variable type annotation
         for inst in k.trace:
-            if inst.pc not in addr_map:
-                addr_map[inst.pc] = 0
-            addr_map[inst.pc] += inst.thread_inst_exec
+            if inst.pc not in addr_map_per_kernel[k]:
+                addr_map_per_kernel[k][inst.pc] = 0
+            addr_map_per_kernel[k][inst.pc] += inst.thread_inst_exec
 
-            if inst.opcode not in opcode_map:
-                opcode_map[inst.opcode] = 0
-            opcode_map[inst.opcode] += inst.thread_inst_exec
+            if inst.opcode not in opcode_map_per_kernel[k]:
+                opcode_map_per_kernel[k][inst.opcode] = 0
+            opcode_map_per_kernel[k][inst.opcode] += inst.thread_inst_exec
 
-            total_dyn_inst += inst.thread_inst_exec
+            total_dyn_inst_per_kernel[k] += inst.thread_inst_exec
 
+    return (
+        addr_map_per_kernel,
+        opcode_map_per_kernel,
+        total_dyn_inst_per_kernel,
+    )
+
+
+def ncu_sass_stats(kernels: list[Kernel]):
+    (
+        addr_map_per_kernel,
+        opcode_map_per_kernel,
+        total_dyn_inst_per_kernel,
+    ) = ncu_sass_stats_all_kernels(kernels)
+    addr_map = merge_per_kernel_stat_into_program_stat(addr_map_per_kernel)
+    opcode_map = merge_per_kernel_stat_into_program_stat(opcode_map_per_kernel)
+    total_dyn_inst = sum(total_dyn_inst_per_kernel.values())
     return addr_map, opcode_map, total_dyn_inst
