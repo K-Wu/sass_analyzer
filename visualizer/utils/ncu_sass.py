@@ -56,7 +56,6 @@ def kernels_are_equal(k1, k2):
     return True
 
 
-# TODO: improve this with the one by cloudcores
 # The matcher code logic here is different from CuInsFeeder because the former
 # reads the ncu source (sass) page while the latter reads the SASS dump from nvcc.
 # Future improvement might involve 1) use the regex pattern from CuInsFeeder if
@@ -93,7 +92,7 @@ def parse_ncu_sass(lines: Union[list[str], io.TextIOWrapper]) -> list[Kernel]:
 
         elif capture and not line.startswith('"Address","Source"'):
             m = re.match(
-                r"^\"(\w+)\",\"([^\"]+)\",\"(\d+)\",\"(\d+)\",\"(\d+)\",\"(\d+)\"",
+                r"^\"(?P<addr>\w+)\",\"(?P<instr>[^\"]+)\",\"(?P<sampling_warp_stall_all>\d+)\",\"(?P<sampling_warp_stall_non_sampled>\d+)\",\"(?P<num_instr_executed>\d+)\",\"(?P<num_samples>\d+)\"",
                 line,
             )
             if m is None:
