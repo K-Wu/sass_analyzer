@@ -1,4 +1,9 @@
+#!/usr/bin/env python3
+from __future__ import annotations
 from .common import *
+import io
+from typing import Union
+import re
 
 # from ... import CASIO
 # from .path_config import get_ncu_sass_file
@@ -46,48 +51,56 @@ def kernels_are_equal(k1, k2):
 
 
 # TODO: improve this with the one by cloudcores
-def parse_ncu_sass(filename):
-    with open(filename) as file:
-        kernels = []
-        kname = None
-        trace = None
-        capture = False
+# The matcher code logic here is different from CuInsFeeder because the former
+# reads the ncu source (sass) page while the latter reads the SASS dump from nvcc.
+# Future improvement might involve 1) use the regex pattern from CuInsFeeder if
+# it handles more corner cases, and 2) use CuInsFeeder class as a neat stateful
+# matcher if the format of the ncu source page is the same as the SASS dump from nvcc.
+def parse_ncu_sass(lines: Union[list[str], io.TextIOWrapper]) -> list[Kernel]:
+    kernels: list[Kernel] = []
+    kname = None
+    trace = None
+    capture = False
 
-        for line in file:
-            if line.startswith('"Kernel Name"'):
-                if capture:
-                    kern = Kernel(kname, trace)
-                    if not is_blacklisted(kname):
-                        kernels.append(kern)
-                    capture = False
+    for line in lines:
+        if len(line.strip()) == 0:
+            continue
+        if line.startswith('"Kernel Name"'):
+            if capture:
+                kern = Kernel(kname, trace)
+                if not is_blacklisted(kname):
+                    kernels.append(kern)
+                capture = False
 
-                m = re.match(r'"Kernel Name",\s*"(.+)"', line)
-                assert m, f"Failed to parse kernel name from {line}"
-                kname = m.group(1)
+            m = re.match(r'"Kernel Name",\s*"(.+)"', line)
+            assert m, f"Failed to parse kernel name from {line}"
+            kname = m.group(1)
 
-                ignore = False
-                for b in kern_blacklist:
-                    if b in kname:
-                        ignore = True
+            ignore = False
+            for b in kern_blacklist:
+                if b in kname:
+                    ignore = True
 
-                if not ignore:
-                    capture = True
-                    trace = []
+            if not ignore:
+                capture = True
+                trace = []
 
-            elif capture and not line.startswith('"Address","Source"'):
-                m = re.match(
-                    r"^\"(\w+)\",\"([^\"]+)\",\"(\d+)\",\"(\d+)\",\"(\d+)\",\"(\d+)\"",
-                    line,
+        elif capture and not line.startswith('"Address","Source"'):
+            m = re.match(
+                r"^\"(\w+)\",\"([^\"]+)\",\"(\d+)\",\"(\d+)\",\"(\d+)\",\"(\d+)\"",
+                line,
+            )
+            if m is None:
+                print(f"Failed to parse line: {line}")
+            assert m is not None, line
+            trace.append(
+                SassInst(
+                    m.group(1),
+                    parse_sass_opcode(m.group(2)),
+                    int(m.group(5)),
+                    int(m.group(6)),
                 )
-                assert m is not None, line
-                trace.append(
-                    SassInst(
-                        m.group(1),
-                        parse_sass_opcode(m.group(2)),
-                        int(m.group(5)),
-                        int(m.group(6)),
-                    )
-                )
+            )
 
     return kernels
 

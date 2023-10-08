@@ -17,7 +17,7 @@ for app in utils.apps: #[:4]:
     sass_file = utils.get_ncu_sass_file('a100', app, config)
     raw_file = utils.get_ncu_raw_file('a100', app, config)
 
-    all_kernels_sw += utils.parse_ncu_sass(sass_file)
+    all_kernels_sw += utils.parse_ncu_sass(open(sass_file))
     opcodes = utils.ncu_sass_opcodes(all_kernels_sw)
     opcode_map = {op: i for i, op in enumerate(opcodes)}
     sw_packed_dists = pdist(
