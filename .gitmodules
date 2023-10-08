@@ -1,0 +1,3 @@
+[submodule "nsight_utils"]
+	path = nsight_utils
+	url = https://github.com/K-Wu/HET_nsight_utils.git
