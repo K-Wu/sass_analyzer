@@ -30,7 +30,7 @@ def get_sass_data():
         sass_file = utils.get_ncu_sass_file('a100', app, config)
 
         print(f'Processing {app}...')
-        kernels = utils.parse_ncu_sass(sass_file)
+        kernels = utils.parse_ncu_sass(open(sass_file))
         opcodes = utils.ncu_sass_opcodes(kernels)
 
         if filter_by == 'gemm':

@@ -1,5 +1,7 @@
 import os
 
+# TODO: this file is not used anyway. Please use nsight_utils as much as possible
+
 
 def extract_nsys_gpu_kernsum_file(input_filename, output_filename):
     """In latest nsys, execute:
@@ -39,7 +41,10 @@ def extract_ncu_raw_file(input_filename, output_filename):
     # assert output filename does not exist
     assert not os.path.exists(output_filename)
     os.system(
-        "ncu --page raw --csv --import " + input_filename + " > " + output_filename
+        "ncu --page raw --csv --import "
+        + input_filename
+        + " > "
+        + output_filename
     )
 
 
@@ -49,5 +54,8 @@ def extract_ncu_sass_file(input_filename, output_filename):
     # assert output filename does not exist
     assert not os.path.exists(output_filename)
     os.system(
-        "ncu --page source --csv --import " + input_filename + " > " + output_filename
+        "ncu --page source --csv --import "
+        + input_filename
+        + " > "
+        + output_filename
     )
