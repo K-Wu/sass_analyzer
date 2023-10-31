@@ -21,11 +21,18 @@ import numpy as np
 import sys
 import matplotlib
 
+from typing import Union
+
 matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 
 
-def roofline(mem_bandwidth, compute_roof, actual_arithmetic_intensity, actual_flops):
+def roofline(
+    mem_bandwidth,
+    compute_roof,
+    actual_arithmetic_intensity: Union[float, list[float]],
+    actual_flops: Union[float, list[float]],
+):
     """compute_roof unit gflops
     mem_bandwidth unit GB/s
     arithmetic intensity unit flop/byte
@@ -46,7 +53,11 @@ def roofline(mem_bandwidth, compute_roof, actual_arithmetic_intensity, actual_fl
 
     x1 = actual_arithmetic_intensity
     y1 = actual_flops
-    plt.scatter([x1], [y1], s=300, marker="^")
+
+    if isinstance(x1, list):
+        plt.scatter(x1, y1, s=300, marker="^")
+    else:
+        plt.scatter([x1], [y1], s=300, marker="^")
 
     font = {"weight": "normal", "color": "black", "size": 8}
     plt.text(2 * x0, 1.1 * y0, "y(GFLOPS) = %g" % (y0), fontdict=font)
@@ -56,9 +67,12 @@ def roofline(mem_bandwidth, compute_roof, actual_arithmetic_intensity, actual_fl
         "y(GFLOPS) = %g(GB/S) * x(FLOP/B)" % (mem_bandwidth),
         fontdict=font,
     )
-    plt.text(1.1 * x1, y1, "(%g,%g)" % (x1, y1), fontdict=font)
 
-    plt.xlim((0, max(5 * x0, 1.5 * x1)))
+    if not isinstance(x1, list):
+        plt.text(1.1 * x1, y1, "(%g,%g)" % (x1, y1), fontdict=font)
+
+    x1_max = max(x1) if isinstance(x1, list) else x1
+    plt.xlim((0, max(5 * x0, 1.5 * x1_max)))
     plt.ylim((0, 2 * y0))
     plt.grid(alpha=0.4)
 
@@ -69,5 +83,8 @@ def roofline(mem_bandwidth, compute_roof, actual_arithmetic_intensity, actual_fl
 
 if __name__ == "__main__":
     roofline(
-        float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4])
+        float(sys.argv[1]),
+        float(sys.argv[2]),
+        float(sys.argv[3]),
+        float(sys.argv[4]),
     )
