@@ -17,47 +17,32 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 # From https://github.com/IntelLabs/t2sp/blob/master/t2s/src/Roofline.py
 ###############################################################################
+from __future__ import annotations
 import numpy as np
 import sys
 import matplotlib
 
-from typing import Union
+from typing import TypeVar
 
 matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 
 
-def roofline(
-    mem_bandwidth,
-    compute_roof,
-    actual_arithmetic_intensity: Union[float, list[float]],
-    actual_flops: Union[float, list[float]],
-):
-    """compute_roof unit gflops
-    mem_bandwidth unit GB/s
-    arithmetic intensity unit flop/byte
-    actual_flops unit gflops"""
-    plt.figure()
-
+def draw_roofs(mem_bandwidth: float, compute_roof: float):
     plt.title("Roofline")
     plt.xlabel("FLOP/B")
     plt.ylabel("GFLOPS")
 
     y0 = compute_roof
-    x0 = y0 / mem_bandwidth
+    x0 = compute_roof / mem_bandwidth
 
-    x = np.arange(0, 5 * x0)
-    y = mem_bandwidth * x
-    plt.plot(x, y, ls="--", c="cornflowerblue")
+    plt.plot(
+        np.arange(0, 5 * x0),
+        mem_bandwidth * np.arange(0, 5 * x0),
+        ls="--",
+        c="cornflowerblue",
+    )
     plt.axhline(y=y0, ls="--", c="orange")
-
-    x1 = actual_arithmetic_intensity
-    y1 = actual_flops
-
-    if isinstance(x1, list):
-        plt.scatter(x1, y1, s=300, marker="^")
-    else:
-        plt.scatter([x1], [y1], s=300, marker="^")
 
     font = {"weight": "normal", "color": "black", "size": 8}
     plt.text(2 * x0, 1.1 * y0, "y(GFLOPS) = %g" % (y0), fontdict=font)
@@ -68,23 +53,96 @@ def roofline(
         fontdict=font,
     )
 
-    if not isinstance(x1, list):
+
+def scatter_sample_points(
+    actual_arithmetic_intensity: float | list[float], actual_flops: float | list[float]
+):
+    x1 = actual_arithmetic_intensity
+    y1 = actual_flops
+    if isinstance(x1, list):
+        plt.scatter(x1, y1, s=300, marker="^")
+    else:
+        plt.scatter([x1], [y1], s=300, marker="^")
+    if not isinstance(x1, list) and not isinstance(y1, list):
+        font = {"weight": "normal", "color": "black", "size": 8}
         plt.text(1.1 * x1, y1, "(%g,%g)" % (x1, y1), fontdict=font)
 
-    x1_max = max(x1) if isinstance(x1, list) else x1
+
+def set_limits(
+    compute_roof: float, mem_bandwidth: float, max_actual_arithmetic_intensity: float
+):
+    x0 = compute_roof / mem_bandwidth
+    x1_max = max_actual_arithmetic_intensity
+    y0 = compute_roof
     plt.xlim((0, max(5 * x0, 1.5 * x1_max)))
     plt.ylim((0, 2 * y0))
     plt.grid(alpha=0.4)
 
-    plt.show(block=False)
-    # plt.savefig('roofline.png')
+
+T = TypeVar("T", float, list[float], list[list[float]], dict[str, list[float]])
+
+
+def plot_roofline_model(
+    mem_bandwidth,
+    compute_roof,
+    actual_arithmetic_intensity: T,
+    actual_flops: T,
+    png_path: str | None = None,
+):
+    """compute_roof unit gflops
+    mem_bandwidth unit GB/s
+    arithmetic intensity unit flop/byte
+    actual_flops unit gflops"""
+    plt.figure()
+    draw_roofs(mem_bandwidth, compute_roof)
+
+    if isinstance(actual_arithmetic_intensity, dict):
+        # actual_arithmetic_intensity is dict[list[float]]
+        for key in actual_arithmetic_intensity:
+            scatter_sample_points(actual_arithmetic_intensity[key], actual_flops[key])
+    elif isinstance(actual_arithmetic_intensity, list) and any(
+        isinstance(ele, list) for ele in actual_arithmetic_intensity
+    ):
+        # actual_arithmetic_intensity is list[list[float]]
+        for i in range(len(actual_arithmetic_intensity)):
+            # Each iteration assigns a different color to the points scattered in the scatter invocation in this iteration.
+            # Reference: https://www.w3schools.com/python/matplotlib_scatter.asp
+            scatter_sample_points(actual_arithmetic_intensity[i], actual_flops[i])
+    else:
+        # actual_arithmetic_intensity is list[float] or float
+        scatter_sample_points(actual_arithmetic_intensity, actual_flops)
+
+    max_arithmetic_intensity: float
+
+    if isinstance(actual_arithmetic_intensity, float):
+        # actual_arithmetic_intensity is float
+        max_arithmetic_intensity = actual_arithmetic_intensity
+    elif any(isinstance(ele, list) for ele in actual_arithmetic_intensity):
+        # actual_arithmetic_intensity is list[list[float]]
+        max_arithmetic_intensity = max(
+            [max(ele) for ele in actual_arithmetic_intensity]
+        )
+    elif isinstance(actual_arithmetic_intensity, dict):
+        # actual_arithmetic_intensity is dict[list[float]]
+        max_arithmetic_intensity = max(
+            [max(ele) for ele in actual_arithmetic_intensity.values()]
+        )
+    elif isinstance(actual_arithmetic_intensity, list):
+        # actual_arithmetic_intensity is list[float]
+        max_arithmetic_intensity = max(actual_arithmetic_intensity)
+    else:
+        raise ValueError(
+            "actual_arithmetic_intensity must be float or list[float] or list[list[float]] or dict[list[float]]"
+        )
+
+    set_limits(compute_roof, mem_bandwidth, max_arithmetic_intensity)
+    if png_path is not None:
+        assert png_path.endswith(".png"), "png_path must end with .png"
+        plt.savefig(png_path)
+    else:
+        plt.show(block=False)
     return plt
 
 
 if __name__ == "__main__":
-    roofline(
-        float(sys.argv[1]),
-        float(sys.argv[2]),
-        float(sys.argv[3]),
-        float(sys.argv[4]),
-    )
+    plot_roofline_model(2000.0, 20000.0, 10.0, 15000.0, "roofline.png")
